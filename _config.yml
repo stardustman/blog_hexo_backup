@@ -86,3 +86,4 @@ deploy:
 duoshuo:
   enable: true
   shortname: your-duoshuo-shortname
+  
