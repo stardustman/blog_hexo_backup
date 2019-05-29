@@ -36,3 +36,8 @@ $ hexo deploy
 ```
 
 More info: [Deployment](https://hexo.io/docs/deployment.html)
+### Assert images
+如果希望图片在文章和首页中同时显示，可以使用标签插件语法。
+_posts/post_name/image.jpg
+1
+{% asset_img image.jpg This is an image %}

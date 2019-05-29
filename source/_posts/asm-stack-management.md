@@ -3,29 +3,71 @@ title: asm-stack-management
 date: 2019-05-28 19:32:16
 tags: ["asm"]
 ---
-# instruction suffiex
+> 前一阵子去看 java 虚拟机原理, 忽然痛悟到虚拟机也是机器啊,呵呵也就是个软件而已 看到 java 方法调用太复杂. 字节码那一套又不太熟悉,还不如直接去看 C 编译后的汇编代码.
+> 目的: 搞明白 X86 架构下函数到底是怎么调用执行的.
+# assembly syntax for X86
+1. gas (gnu assembler syntax),也就是 AT&T 风格.本文采用该风格.
+2. intel syntax
+
+# instruction suffixes
 缩写 | 全称 | 位数
 ---- | ---- | ----
 b | byte | 8bit
-w | word| 16bit
-l | long| 32bit
-q | quad| 64bit
+w | word | 16bit
+l | long | 32bit
+q | quad | 64bit
+
+# addressing mode
+> CPU 寻址方式
+## direct addressing
+> movb $0x05,%al 表示为:R[al] = 0x05;将立即数 0x05(1 byte) 复制到寄存器 al
+## indirect addressing
+> 间接寻址也就是到内存里去找
+### register to memory
+> movl %eax, -4(%ebp) 表示为:mem[R[ebp]-4] = R[eax]; 将寄存器 eax 里面的值复制到 寄存器 ebp 的值减去 4 指向的内存地址处(也就是 R[ebp] -4 的值是一个内存地址). 通过寄存器指向了内存地址,是不是很熟悉的指针啊,对,就是指针. C 语言的指针就是这么玩的啊!
+### memory to register
+> movl -4(%ebp), %eax 表示为:R[eax] = mem[R[ebp] -4]; 将寄存器 esp 的值减去 4 的值指向的内存地址处的值, 复制到寄存器 eax
+
+# program counter for stored program
+> PC = PC + \(instruction size in bytes\)
+> (instruction) (src1) (src2) (dst)
+> In most processors, the PC is incremented after fetching an instruction,
+> and holds the memory address of ("points to") the next instruction that would be executed. 
+> (In a processor where the incrementation precedes the fetch, 
+> the PC points to the current instruction being executed.) 
+> 注意:不允许操作 ip(instruction pointer)这个寄存器,如果这个能被编译器操作的话,就完全想跳到哪执行就跳到哪执行了.
 
 # stack management
+> push pop 指令操作的是 sp(stack pointer) 这个寄存器.
+> 由 bp(base pointer) 这个寄存器存放栈底的内存地址.
+> X86 架构的(sp)栈底指向高地址. (绘图的话自上而下,高地址在上面)
+> 栈分配空间:sp 减去需要的地址空间大小(所谓的栈向下生长); 
+> 栈回收空间:sp 加上需要的地址空间大小(所谓的栈向上收缩);(PS:相当无聊的话)
 ## pushl %eax
+> The push instruction places its operand onto the top of the hardware supported stack in memory. Specifically, push first decrements ESP by 4, then places its operand into the contents of the 32-bit location at address [ESP]. ESP (the stack pointer) is decremented by push since the x86 stack grows down - i.e. the stack grows from high addresses to lower addresses.
+> 这里可以看到 push 的是多字节的数据, 那就涉及到怎样排列多字节数据的问题了.也就是所谓的字节序的问题.(这里不做讨论)
 等价于
 ```
 subl $4, %esp //分配4个字节的空间,所谓的栈向下生长
 movl %eax, (%esp) //将 eax 的值复制到 esp 指到的内存地址
 ```
-> put value of eax onto stack
+> push value of %eax onto stack
 ## popl %eax
+> The pop instruction removes the 4-byte data element from the top of the hardware-supported stack into the specified operand (i.e. register or memory location). It first moves the 4 bytes located at memory location [SP] into the specified register or memory location, and then increments SP by 4.
 等价于
 ```
 movl (%esp),%eax //将 esp 的值复制到 eax
 addl $4,%esp //回收空间
 ```
-# 函数栈帧
+> pop %eax off stack
+# function call and return
+## call <label>
+> These instructions implement a subroutine call and return. The call instruction first pushes the current code location(也就是 PC 或者 IP) onto the hardware supported stack in memory(see the pop instruction for details), and then performs an unconditional jump to the code location indicated by the label operand. Unlike the simple jump instructions, the call instruction saves the location to return to when the subroutine completes.
+> 注意到 CPU 在 fetch 到一条指令后(当然 call 指令也不例外), PC 就已经自动加 1 了. 此时的 PC 值也就是所谓的函数返回地址. 
+## ret
+> The ret instruction implements a subroutine return mechanism. This instruction first pops a code location off the hardware supported in-memory stack (也就是 call 指令压入栈中的 PC,将这个值复制到 PC 寄存器)(see the pop instruction for details). It then performs an unconditional jump to the retrieved code location.
+> 相当于是 pop %eip
+# stack frame
 ```c
 void swap(int a,int b){
     int tmp = a;
@@ -48,6 +90,35 @@ swap(int, int):
         movl    %eax, -24(%rbp) // 把 %eax (a) 赋值给 %rbp - 24 的地址处,完成 a 的交换
         nop // 延时
         popq    %rbp // 等价于 movq (%rsp),%rbp ; 上一个函数栈帧的基地址恢复;addq $8,%rsp; 上一个函数的%rsp恢复
-        ret // popq %rip 函数调用会把 return address 压入栈帧,Call instruction pushes return address (old EIP) onto stack
+        ret // popq %rip.(恢复原来的 pc) 函数调用会把 return address 压入栈帧,Call instruction pushes return address (old EIP) onto stack
 ```
-
+```c
+int main() {
+    swap(1,2);
+    return 0;
+}
+```
+```
+main:
+        pushq   %rbp
+        movq    %rsp, %rbp
+        movl    $2, %esi //由 caller 准备函数参数 2
+        movl    $1, %edi //由 caller 准备函数参数 1
+        call    swap //在 CPU fetch 了 call 指令后, pc 已经指向了下一条指令,也就是 mov1 $0, %eax 这条指令.此时的 call 指令完成了两件事,第一件事:将 pc(OLD) 压入到栈中(swap 函数 ret 指令(函数返回)就是把这个 pc 重新 pop 到 pc 这个寄存器,CPU 就能接着执行 mov1 $0, %eax 这条指令了),第二件事:jump 到swap的地址,开始执行swap的代码.
+        movl    $0, %eax //返回值 0 
+        popq    %rbp
+        ret
+```
+# C compare to  Assembly
+{% asset_img c-swap-to-asm-swap.png C swap code VS asm code %} 
+# bombs
+``` 
+pushq   %rbp  // 保留上一个函数(也就是调用者)的栈基址
+movq    %rsp, %rbp // 新函数的栈基址.一个新的栈帧 sp 和 bp 指向的是同一个地址
+```
+> 一个所谓的栈帧就是有 sp(stack pointer) 和 bp(base pointer) 这两个寄存器来维护的.
+这两句会出现在每一个函数的开始, 那么问题来了 main 函数里面保留的是哪一个调用函数的栈基址呢? 个人推测, 不一定正确, 我们知道创建进程(线程)是 OS 内核的功能, 当然进程销毁也是内核的功能. 内核同样维护着属于内核空间的栈帧, 当进程创建完毕后, 我们写的 C 代码应该是被内核里的函数调用的, 这样的话 main 里面 pushq %rbp 应该是保留的内核函数的栈基址. 这样 main 的 ret 返回后就能接着执行内核函数里面的逻辑了. (估计也就是销毁进程一系列操作了, 这样才能收回来啊!)
+# references
+1. [program counter](https://en.wikipedia.org/wiki/Program_counter)
+2. [A reader's guide to x86 assembly](http://cseweb.ucsd.edu/classes/sp10/cse141/pdf/02/S01_x86_64.key.pdf)
+3. [x86 guide](https://www.cs.virginia.edu/~evans/cs216/guides/x86.html)
