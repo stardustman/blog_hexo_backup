@@ -35,7 +35,7 @@ q | quad | 64bit
 > and holds the memory address of ("points to") the next instruction that would be executed. 
 > (In a processor where the incrementation precedes the fetch, 
 > the PC points to the current instruction being executed.) 
-> 注意:不允许操作 ip(instruction pointer)这个寄存器,如果这个能被编译器操作的话,就完全想跳到哪执行就跳到哪执行了.
+> 注意:不允许直接操作 ip(instruction pointer)这个寄存器,如果这个能被编译器操作的话,就完全想跳到哪执行就跳到哪执行了. 实际上 call 和 ret 指令就是在操作这两个寄存器. call 带来的效果之一就是 push %rip, ret 带来的效果之一就是 pop %rip.两者具有对称作用啊!
 
 # stack management
 > push pop 指令操作的是 sp(stack pointer) 这个寄存器.
@@ -66,7 +66,7 @@ addl $4,%esp //回收空间
 > 注意到 CPU 在 fetch 到一条指令后(当然 call 指令也不例外), PC 就已经自动加 1 了. 此时的 PC 值也就是所谓的函数返回地址. 
 ## ret
 > The ret instruction implements a subroutine return mechanism. This instruction first pops a code location off the hardware supported in-memory stack (也就是 call 指令压入栈中的 PC,将这个值复制到 PC 寄存器)(see the pop instruction for details). It then performs an unconditional jump to the retrieved code location.
-> 相当于是 pop %eip
+> 所以啊, call 和 ret 指令也间接操作了 sp 这个寄存器. 硬件实现的功能, 不需要过多的计较.
 # stack frame
 ```c
 void swap(int a,int b){
