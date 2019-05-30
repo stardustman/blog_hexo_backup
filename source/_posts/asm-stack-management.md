@@ -127,7 +127,7 @@ main:
 {% asset_img asm-execute-graph.png asm execute graph %}
 > 注意: 示意图里面的是 64 bit 的汇编代码. 也就是 rbp, rsp, pc 都是 64 bit的.
 > 注意: 所有的 push 和 pop 指令都会改变 sp 寄存器的值.
-> 图1 和 图5 , 图2 和 图6 完全一样, 这不是有意为之, 按照 X86 的函数调用机制就是这样的. 在被调用函数(swap)执行 popq % rbp, 这条指令就是要恢复调用函数(main)的rbp, 执行 ret 这条指令就是要恢复调用函数(main)的下一条指令的地址. 也就是将 pc 的值恢复为 X, 这样就可以接着执行了嘛. 也就是所谓的恢复调用者(main)的栈帧. 也就是 main 函数调用 swap 函数(call 指令)保留 main 的状态(也就是 main 函数的 rbp 和 pc), swap 执行到最后(popq, ret)负责恢复现场(也就是恢复 main 函数的 rbp 和 rsp 和 pc).
+> 图1 和 图6 , 图2 和 图5 完全一样, 这不是有意为之, 按照 X86 的函数调用机制就是这样的. 在被调用函数(swap)执行 popq % rbp, 这条指令就是要恢复调用函数(main)的rbp, 执行 ret 这条指令就是要恢复调用函数(main)的下一条指令的地址. 也就是将 pc 的值恢复为 X, 这样就可以接着执行了嘛. 也就是所谓的恢复调用者(main)的栈帧. 也就是 main 函数调用 swap 函数(call 指令)保留 main 的状态(也就是 main 函数的 rbp 和 pc), swap 执行到最后(popq, ret)负责恢复现场(也就是恢复 main 函数的 rbp 和 rsp 和 pc).
 > 图3 是 swap 函数的栈帧, 此时新函数的栈帧 rsp 和 rbp 指向的是相同的内存地址.
 > 图4 所有的 mov 使用的内存地址, 都是通过 rbp 来偏移得到, rbp 的值并没有发生改变. 
 > 图5 执行完 popq %rsp, 恢复 main 函数的栈基址(rbp), 也就是和图1 一样.
