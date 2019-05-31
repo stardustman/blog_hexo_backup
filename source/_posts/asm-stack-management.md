@@ -75,7 +75,7 @@ addl $4,%esp //回收空间
 # function call and return
 ## call <label>
 > These instructions implement a subroutine call and return. The call instruction first pushes the current code location onto the hardware supported stack in memory(see the push instruction for details), and then performs an unconditional jump to the code location indicated by the label operand. Unlike the simple jump instructions, the call instruction saves the location to return to when the subroutine completes.
-> 注意到 CPU 在 fetch 到一条指令后(当然 call 指令也不例外), PC 就已经自动加 1 了. 此时的 PC 值也就是所谓的函数返回地址. call 指令做了两件事, 第一件事:将 caller 的 rbp 保留到栈中, 第二件事: jump 到 label 位置, 此时改变了 pc 的值.
+> 注意到 CPU 在 fetch 到 call 指令后, PC 就已经自动加 1 了. 此时的 PC 值也就是所谓的函数返回地址. call 指令做了两件事, 第一件事:将此时的 ip 保存到栈中(因为控制流将要跳转了), 第二件事: jump 到 label 位置, 此时已经改变了 pc 的值.
 ## ret
 > The ret instruction implements a subroutine return mechanism. This instruction first pops a code location off the hardware supported in-memory stack (也就是 call 指令压入栈中的 PC, 将这个值复制到 PC 寄存器)(see the pop instruction for details). It then performs an unconditional jump to the retrieved code location.
 > 所以啊, call(含有一个 push 操作) 和 ret(含有一个 pop 操作) 指令也间接操作了 sp 这个寄存器. 硬件实现的功能, 不需要过多的计较.
