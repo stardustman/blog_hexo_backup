@@ -75,7 +75,7 @@ addl $4,%esp //回收空间
 # function call and return
 ## call <label>
 > These instructions implement a subroutine call and return. The call instruction first pushes the current code location onto the hardware supported stack in memory(see the push instruction for details), and then performs an unconditional jump to the code location indicated by the label operand. Unlike the simple jump instructions, the call instruction saves the location to return to when the subroutine completes.
-> 注意到 CPU 在 fetch 到 call 指令后, PC 就已经自动加 1 了. 此时的 PC 值也就是所谓的函数返回地址. call 指令做了两件事, 第一件事:将此时的 ip 保存到栈中(因为控制流将要跳转了), 第二件事: jump 到 label 位置, 此时已经改变了 pc 的值.
+> 注意到 CPU 在 fetch 到 call 指令后, PC 就已经自动加 1 了. 此时的 PC 值也就是所谓的函数返回地址. call 指令做了两件事, 第一件事: 将此时的 ip 保存到栈中(因为控制流将要跳转了), 第二件事: jump 到 label 位置, 此时已经改变了 pc 的值.
 ## ret
 > The ret instruction implements a subroutine return mechanism. This instruction first pops a code location off the hardware supported in-memory stack (也就是 call 指令压入栈中的 PC, 将这个值复制到 PC 寄存器)(see the pop instruction for details). It then performs an unconditional jump to the retrieved code location.
 > 所以啊, call(含有一个 push 操作) 和 ret(含有一个 pop 操作) 指令也间接操作了 sp 这个寄存器. 硬件实现的功能, 不需要过多的计较.
@@ -90,7 +90,7 @@ void swap(int a,int b){
 ```
 // 64 bit 机器 , AT&T 风格的汇编
 swap(int, int):
-        pushq   %rbp // 上一个栈帧的基地址压栈 等价于 subl $8, %rsp; movq %rbp,(%rsp)
+        pushq   %rbp // 上一个栈帧(main)的基地址压栈 等价于 subq $8, %rsp; movq %rbp,(%rsp)
         movq    %rsp, %rbp // 开辟新的函数栈帧,也就是形成一个新的栈的基地址
         movl    %edi, -20(%rbp) //参数 a
         movl    %esi, -24(%rbp) //参数 b
@@ -99,10 +99,10 @@ swap(int, int):
         movl    -24(%rbp), %eax // 把 b 赋值给 % eax（b）
         movl    %eax, -20(%rbp) // 把 %eax (b)赋值给 %rbp - 20（b） 的地址处,完成 b 的交换
         movl    -4(%rbp), %eax  // 把 %rbp - 4 地址处的值(a) 赋值给 %eax (a)
-        movl    %eax, -24(%rbp) // 把 %eax (a) 赋值给 %rbp - 24 的地址处,完成 a 的交换
+        movl    %eax, -24(%rbp) // 把 %eax (a) 赋值给 %rbp - 24 的地址处, 完成 a 的交换
         nop // 延时
-        popq    %rbp // 等价于 movq (%rsp), %rbp ; 上一个函数栈帧的基地址恢复; addq $8, %rsp ; 上一个函数的 %rsp 恢复
-        ret // popq %rip. (恢复原来的 pc) 函数调用会把 return address 压入栈帧, Call instruction pushes return address (old EIP) onto stack
+        popq    %rbp // 等价于 movq (%rsp), %rbp ; 上一个函数栈帧(main)的基地址恢复; addq $8, %rsp ; 上一个函数的 %rsp 恢复
+        ret // popq %rip. (恢复 main 的 pc), Call instruction pushes return address (old EIP) onto stack
 ```
 ```c
 int main() {
@@ -116,7 +116,7 @@ main:
         movq    %rsp, %rbp
         movl    $2, %esi //由 caller 准备函数参数 2
         movl    $1, %edi //由 caller 准备函数参数 1
-        call    swap //在 CPU fetch 了 call 指令后, pc 已经指向了下一条指令,也就是 mov1 $0, %eax 这条指令. 此时的 call 指令完成了两件事, 第一件事:将 pc(OLD) 压入到栈中(swap 函数 ret 指令(函数返回)就是把这个 pc 重新 pop 到 pc 这个寄存器, CPU 就能接着执行 mov1 $0, %eax 这条指令了), 第二件事: jump 到swap的地址,开始执行swap的代码.
+        call    swap //在 CPU fetch 了 call 指令后, pc 已经指向了下一条指令, 也就是 movl $0, %eax 这条指令. 此时的 call 指令完成了两件事, 第一件事: 将 pc(old) 压入到栈中(swap 函数 ret 指令(函数返回)就是把这个 pc(old) pop 到 pc 这个寄存器, CPU 就能接着执行 movl $0, %eax 这条指令了), 第二件事: jump 到swap的地址,开始执行swap的代码.
         movl    $0, %eax //返回值 0 
         popq    %rbp
         ret
