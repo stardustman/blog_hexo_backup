@@ -27,12 +27,12 @@ q | quad | 64bit
 > 间接寻址也就是到内存里去找
 ### register to memory
 > movl %eax, -4(%ebp) 
-> 表示为:mem[R[ebp]-4] = R[eax];
+> 表示为: mem[R[ebp]-4] = R[eax];
 > 将寄存器 eax 里面的值复制到寄存器 ebp 的值减去 4 指向的内存地址处(也就是 R[ebp] -4 的值是一个内存地址). 
 > 通过寄存器指向了内存地址, 是不是很熟悉的指针啊, 对, 就是指针. C 语言的指针就是这么玩的啊!
 ### memory to register
 > movl -4(%ebp)
-> %eax 表示为:R[eax] = mem[R[ebp] -4]; 
+> %eax 表示为: R[eax] = mem[R[ebp] -4]; 
 > 将寄存器 esp 的值减去 4 的值指向的内存地址处存放的值, 复制到寄存器 eax
 
 # program counter for stored program
@@ -122,7 +122,7 @@ main:
         ret
 ```
 # C compare to  Assembly
-{% asset_img c-swap-to-asm-swap.png C swap code VS asm code %}
+{% asset_img c-swap-to-asm-swap.png C code VS asm code %}
 # asm execute graph
 {% asset_img asm-execute-graph.png asm execute graph %}
 > 注意: 示意图里面的是 64 bit 的汇编代码. 也就是 rbp, rsp, pc 都是 64 bit的.
