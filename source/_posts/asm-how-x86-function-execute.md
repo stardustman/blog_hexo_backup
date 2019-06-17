@@ -1,5 +1,5 @@
 ---
-title: asm-stack-management
+title: asm-how-x86-function-execute
 date: 2019-05-28 19:32:16
 tags: ["asm"]
 ---
