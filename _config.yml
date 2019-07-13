@@ -87,5 +87,11 @@ duoshuo:
   enable: true
   shortname: your-duoshuo-shortname
   
+symbols_count_time:
+  symbols: true
+  time: true
+  total_symbols: true
+  total_time: true
+  exclude_codeblock: false
 
 
