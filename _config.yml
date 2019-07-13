@@ -75,6 +75,14 @@ pagination_dir: page
 ## Themes: https://hexo.io/themes/
 theme: next
 
+## word count
+symbols_count_time:
+  symbols: true
+  time: true
+  total_symbols: true
+  total_time: true
+  exclude_codeblock: false
+
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
@@ -84,14 +92,10 @@ deploy:
 
 # comment support
 duoshuo:
-  enable: true
+  enable: false
   shortname: your-duoshuo-shortname
   
-symbols_count_time:
-  symbols: true
-  time: true
-  total_symbols: true
-  total_time: true
-  exclude_codeblock: false
+
+
 
 
