@@ -61,6 +61,7 @@ tags: ["tools"]
 ### baidu
 1. [baiduwp](https://www.baiduwp.com/)
 2. [pandownload](http://pandownload.com/index.html)
+3. [Xdown](https://xdown.org/)
 
 ### converter
 1. [audio-converter](https://online-audio-converter.com/)

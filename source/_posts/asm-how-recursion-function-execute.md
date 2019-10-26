@@ -11,12 +11,14 @@ tags: ["asm"]
 每月每对可生育的兔子会诞生下一对新兔子
 兔子永不死
 > 问第 n 月有多少对兔子?
+
 ## 图解
 > 假设在n月有兔子总共 a 对, n+1 月总共有 b 对. 在 n+2 月必定总共有 a+b 对: 因为在 n+2 月的时候, 前一月(n+1月) 的 b 对兔子可以存留至第 n+2 月(在当月属于新诞生的兔子尚不能生育). 而新生育出的兔子对数等于所有在 n 月就已存在的 a 对.
 {% asset_img fibonacci-sequence.png fibonacci-sequence %}
+
 # 代码分析
 ## C 代码
-```
+```cpp
 #include <stdio.h>
 long fib(long n){
     if(n <= 2){
@@ -122,8 +124,10 @@ main:
 {% asset_img fib(4)-call-stack.png  fib(4)调用栈分析 %}
 ### 符合递归终止时调用栈执行顺序
 > fib(3) = fib(2) + fib(1), 就符合递归退出的条件.
+
 #### 代码执行顺序
 {% asset_img fib(3)-execute-sequence.png 第一次执行到fib(3)调用流程 %}
+
 #### 二叉树后序遍历的视角来分析
 > 递归终止条件:
 > fib(2) = 1 视为左叶子节点
@@ -135,6 +139,7 @@ main:
 > fib(3) 调用 fib(1), 计算出参数 n = 1. 进入右叶子节点.
 > fib(1) 返回 fib(3), fib(1) 的返回值 rax = 1
 > fib(3) 计算 fib(3) = fib(2) + fib(1) = rbx + rax = 1 + 1 = 2
+
 #### 栈帧的创建和销毁-二叉树后序遍历
 > fib(n) = fib(n-1) + fib(n-2)(n > 2) 递归调用可以看作是栈帧按照二叉树按照后续遍历的顺序动态的创建和销毁.
 > 着色方框为创建的栈帧
@@ -154,7 +159,7 @@ main:
 > 时间复杂度是: O(2^n)
 
 ##### 运行时间测试
-```
+```cpp
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -189,7 +194,7 @@ int main(){
 
 ## 优化递归
 ### 空间换时间优化代码
-```
+```cpp
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -239,9 +244,10 @@ int main(){
 > 时间复杂度是 O(50), 结果几乎秒算.
 > unsigned long result[LENGTH];
 > 拿空间换时间, 其实这句话有问题的, 拿出来空间, 计算逻辑也是要优化的. 
+
 ### 尾递归优化
 #### 非优化递归
-```
+```cpp
 unsigned long fib(unsigned long n){
     if(n <= 2){
         return 1;
@@ -251,11 +257,12 @@ unsigned long fib(unsigned long n){
 ```
 > 这里 fib(n-1) 和 fib(n-2) 与 fib(n) 其实根本不是同一个函数.
 > 三者的逻辑其实不同, 但是函数之间有依赖.
+
 #### 优化递归
 > 尾递归的实现, 往往需要改写递归函数, 确保最后一步只调用自身. 做到这一点的方法, 就是把所有用到的内部变量改写成函数的参数.
 > 尾调用的概念非常简单, 一句话就能说清楚, 就是指某个函数的最后一步是调用另一个函数.
 ##### 中间变量改成函数的参数
-```
+```cpp
 unsigned long fib(unsigned long n, unsigned long prev, unsigned long sum ){
     if(n <= 3){
         return sum;
@@ -265,7 +272,7 @@ unsigned long fib(unsigned long n, unsigned long prev, unsigned long sum ){
 > 这里 fib(n-1, sum , prev + sum) 的才是和 fib(unsigned long n, unsigned long prev, unsigned long sum ) 完全一样的函数.
 ```
 ##### 包装一层 
-```
+```cpp
 unsigned long   fibonacc(unsigned long n){
     if( n <= 2){
         return 1;

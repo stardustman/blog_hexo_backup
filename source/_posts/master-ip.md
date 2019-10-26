@@ -5,8 +5,11 @@ tags: ["network"]
 ---
 # Motivation
   The Internet Protocol is designed for use in interconnected systems of **packet-switched** computer communication networks.  Such a system has been called a "catenet".  The internet protocol provides for transmitting blocks of data called datagrams from sources to destinations, where sources and destinations are hosts identified by **fixed length addresses**.  The internet protocol also provides for **fragmentation** and **reassembly** of long datagrams, if necessary, for transmission through "small packet" networks.
-# IP format
-  {% asset_img ip-header-format.png ip-format %}
+> IPv4 is a connectionless protocol for use on packet-switched networks. It operates on a best effort delivery model, in that it does not guarantee delivery, nor does it assure proper sequencing or avoidance of duplicate delivery. These aspects, including data integrity, are addressed by an upper layer transport protocol, such as the Transmission Control Protocol (TCP).
+# IP header format
+  {% asset_img ip-header-format.png ip-header-format %}
+# Ip datagram
+  {% asset_img ip-format.png ip-format %}
 
 # IPV4 example 
   {% asset_img ip-capture-wireshark.jpg ip-capture-wireshark %}
@@ -44,5 +47,11 @@ first fragment has offset zero.
 ## Destination IP Address(32 bits)
 0x ac:10:79:65 -> 172.16.121.101
 
+
+
+# References
+1. [ip fragmentation and reassembly](http://user.it.uu.se/~rmg/teaching/IP.pdf)
+2. [fragmentation & reassembly](https://en.m.wikipedia.org/wiki/IPv4#Fragmentation_and_reassembly)
+3. [ip 重组](https://mp.weixin.qq.com/s/ifZk5Ox9cnixq1ZxgwFBSw)
 
   

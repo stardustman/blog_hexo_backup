@@ -3,19 +3,23 @@ title: asm-how-x86-64-arguments-pass
 date: 2019-06-24 09:52:27
 tags: ["asm"]
 ---
-> x86-64 下函数参数传递, 汇编层面分析.
+### x86-64 下函数参数传递, 汇编层面分析
+
 > To pass parameters to the subroutine, we put up to six of them into registers (in order: rdi, rsi, rdx, rcx, r8, r9). If there are more than six parameters to the subroutine, then push the rest onto the stack in reverse order (i.e. last parameter first) – since the stack grows down, the first of the extra parameters (really the seventh parameter) parameter will be stored at the lowest address (this inversion of parameters was historically used to allow functions to be passed a variable number of parameters).
 
 # 代码分析
 ## C main 
-```
+```cpp
 int main(){
     int result = 0;
     result = testArgs(1,2,3,4,5,6,7,8);
     return 0;
 }
+
 ```
+
 ### Asm main 
+
 ```
 main:
         pushq   %rbp
@@ -37,8 +41,10 @@ main:
         leave
         ret
 ```
+
 ### C testArgs
-```
+
+```cpp
 int testArgs(long a1,long a2,long a3,long a4,long a5,long a6,long a7,long a8){
     long sum = 0;
     sum = a1 + a2 + a3 + a4 +a5 + a6 + a7 + a8;
@@ -47,7 +53,7 @@ int testArgs(long a1,long a2,long a3,long a4,long a5,long a6,long a7,long a8){
 ```
 
 ### Asm testArgs
-```
+```x86asm
 testArgs(long, long, long, long, long, long, long, long):
         pushq   %rbp
         movq    %rsp, %rbp

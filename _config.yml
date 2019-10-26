@@ -96,6 +96,8 @@ duoshuo:
   shortname: your-duoshuo-shortname
   
 
-
+# Extensions
+## Plugins: http://hexo.io/plugins/
+plugins: hexo-generate-feed  # RSS feed
 
 

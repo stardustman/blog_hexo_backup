@@ -5,10 +5,11 @@ tags: ["asm"]
 ---
 > 前一阵子去看 java 虚拟机原理, 忽然痛悟到虚拟机也是机器啊, 呵呵也就是个软件而已. 看到 java 方法调用太复杂. 字节码那一套又不太熟悉, 还不如直接去看 C 编译后的汇编代码.
 > 目的: 搞明白 X86 架构下函数到底是怎么调用执行的.
+
 # assembly syntax for X86
 ## gas (gnu assembler syntax), 也就是 AT&T 风格. 
 本文采用该风格.
-```
+```cpp
 swap(int, int):
         pushq   %rbp
         movq    %rsp, %rbp
@@ -25,7 +26,7 @@ swap(int, int):
         ret
 ```
 ## intel syntax
-```
+```x86asm
 swap(int, int):
         push    rbp
         mov     rbp, rsp
@@ -51,17 +52,21 @@ q | quad | 64bit
 
 # addressing mode
 > CPU 寻址方式, 也就是拿到数据的方式.
+
 ## direct addressing
 > movb $0x05,%al 
 > 表示为:R[al] = 0x05;
 > 将立即数 0x05(1 byte) 复制到寄存器 al
+
 ## indirect addressing
 > 间接寻址也就是到内存里去找
+
 ### register to memory
 > movl %eax, -4(%ebp) 
 > 表示为: mem[R[ebp]-4] = R[eax];
 > 将寄存器 eax 里面的值复制到寄存器 ebp 的值减去 4 指向的内存地址处(也就是 R[ebp] -4 的值是一个内存地址). 
 > 通过寄存器指向了内存地址, 是不是很熟悉的指针啊, 对, 就是指针. C 语言的指针就是这么玩的啊!
+
 ### memory to register
 > movl -4(%ebp)
 > %eax 表示为: R[eax] = mem[R[ebp] -4]; 
@@ -77,10 +82,12 @@ q | quad | 64bit
 > (In a processor where the incrementation precedes the fetch, the PC points to the current instruction being executed.) 
 > 同样的在 CPU fetch 一条指令之前, PC 指向当前正在执行的指令.
 > 注意: 不允许直接操作 ip(instruction pointer) 也叫 pc(program counter) 这个寄存器, 如果这个能被编译器操作的话, 就完全想跳到哪执行就跳到哪执行了. 实际上 call 和 ret 指令就是在间接操作这两个寄存器. call 带来的效果之一就是 push %rip, ret 带来的效果之一就是 pop %rip. 两者具有对称作用啊!
+
 # change control flow
 ## jmp label
 > When a jump instruction executes (in the last step of the machine cycle), it puts a new address into the PC. Now the fetch at the top of the next machine cycle fetches the instruction at that new address. Instead of executing the instruction that follows the jump instruction in memory, the processor "jumps" to an instruction somewhere else in memory.
 > jmp 指令把 label 所在的地址, 复制给 pc 寄存器. 这就改变了程序的控制流. 然后程序流程就脱离了原来的执行流. 和 call label 很相似, 对, call指令作用之一就包括了一个隐式的 jmp label. 函数调用也就是把控制权交给了被调用者. 但是控制权要回到调用函数那里. 只不过 call 指令在函数交出控制权之前还多干了一件事, 就是把此时的 pc 值 push 到了栈里. 
+
 # stack management 
 ## stack pointer
 > A stack register is a computer central processor register whose purpose is to keep track of a call stack.
@@ -88,7 +95,9 @@ q | quad | 64bit
 > 栈底地址: 由bp(base pointer) 保存
 > 栈分配空间: sp 减去需要的地址空间大小(所谓的栈向下生长); 
 > 栈回收空间: sp 加上需要的地址空间大小(所谓的栈向上收缩);(PS: 相当无聊的话)
+
 {% asset_img x86-64-stack.png x86-64-stack %}
+
 ## pushl %eax
 > push value of %eax onto stack
 > The push instruction places its operand onto the top of the hardware supported stack in memory. Specifically, push first decrements ESP by 4, then places its operand into the contents of the 32-bit location at address [ESP]. ESP (the stack pointer) is decremented by push since the x86 stack grows down - i.e. the stack grows from high addresses to lower addresses.
@@ -114,6 +123,7 @@ addl $4,%esp //回收空间
 > call label 作用等价于:
 > pushq %rip
 > jmp label
+
 ## ret
 > The ret instruction implements a subroutine return mechanism. This instruction first pops a code location off the hardware supported in-memory stack (也就是 call 指令压入栈中的 PC, 将这个值复制到 PC 寄存器)(see the pop instruction for details). It then performs an unconditional jump to the retrieved code location.
 > 所以啊, call(含有一个 push 操作) 和 ret(含有一个 pop 操作) 指令, 这是实现控制流跳转和恢复的关键. 也间接操作了 sp 这个寄存器. 硬件实现的功能, 不需要过多的计较.
@@ -123,12 +133,15 @@ addl $4,%esp //回收空间
 # call stack
 > In computer science, a call stack is a stack data structure that stores information about the active subroutines of a computer program. This kind of stack is also known as an execution stack, program stack, control stack, run-time stack, or machine stack, and is often shortened to just "the stack".
 > A call stack is used for several related purposes, but the main reason for having one is to keep track of the point to which each active subroutine should return control when it finishes executing. 
-> An active subroutine is one that has been called but is yet to complete execution after which control should be handed back to the point of call. Such activations of subroutines may be nested to any level (recursive as a special case), hence the stack structure. 
+> An active subroutine is one that has been called but is yet to complete execution after which control should be handed back to the point of call. Such activations of subroutines may be nested to any level (recursive as a special case), hence the stack structure.
+ 
 ## example
 > for example, a subroutine DrawSquare calls a subroutine DrawLine from four different places, DrawLine must know where to return when its execution completes. To accomplish this, the address following the instruction that jumps to DrawLine, the return address, is pushed onto the call stack with each call.
+
 {% asset_img callstack-layout-for-upward-growing-stacks.png callstack-layout-for-upward-growing-stacks %}
+
 # code analysis
-```c
+```cpp
 void swap(int a, int b){
     int tmp = a;
     a = b;
@@ -136,7 +149,7 @@ void swap(int a, int b){
 }
 ```
 ```
-// 64 bit 机器 , AT&T 风格的汇编
+-- 64 bit 机器 , AT&T 风格的汇编
 swap(int, int):
         pushq   %rbp // 上一个栈帧(main)的基地址压栈 等价于 subq $8, %rsp; movq %rbp,(%rsp)
         movq    %rsp, %rbp // 开辟新的函数栈帧, 也就是形成一个新的栈的基地址
@@ -152,7 +165,7 @@ swap(int, int):
         popq    %rbp // 等价于 movq (%rsp), %rbp ; 上一个函数栈帧(main)的基地址恢复; addq $8, %rsp ; 上一个函数的 %rsp 恢复
         ret // 1. popq %rip. (恢复 main 的 pc, call swap 这条指令压入的 pc ) 2. jmp % rip 处继续执行.(也就是 movl $0, %eax 这条指令的地址)
 ```
-```c
+```cpp
 int main() {
     swap(1, 2);
     return 0;
@@ -171,8 +184,10 @@ main:
 ```
 # C compare to  Assembly
 {% asset_img c-swap-to-asm-swap.png C code VS asm code %}
+
 # asm execute graph
 {% asset_img asm-execute-graph.png asm execute graph %}
+
 > 注意: 示意图里面的是 64 bit 的汇编代码.
 > 注意: 所有的 push 和 pop 指令都会改变 sp 寄存器的值.
 > 图1 main 函数执行完 pushq %rbp 和 movq %rsp, %rbp, 开辟 main 函数的栈帧.
@@ -181,12 +196,12 @@ main:
 > 图4 所有的 mov 使用的内存地址, 都是通过 rbp 来偏移得到, rbp 的值并没有发生改变. 
 > 图5 执行完 popq %rsp, 恢复 main 函数的栈基址(rbp), 也就是和图1 一样.
 > 图6 执行完 ret 恢复为 main 函数的栈帧(这里主要是 rsp, rbp, pc, 个人理解把 pc 视为栈帧的一部分, 因为函数调用控制权发生转移, 幕后也离不开 pc 这个寄存器的变化). ret 的作用等价于 popq %rip. 但是无法直接操作 ip(pc) 这个寄存器. 也就相当于间接改变 ip. 此时 pc 已被 ret 指令恢复成了 X. (此时实际上已经控制权已经回到 main 函数了), 接下来就是继续执行 main 函数的代码. 其实 swap 函数的栈帧已经被销毁了. 也就是再也访问不到 swap 函数里的变量了. 这就是 C 语言里的所谓的本地变量的本质.
-> 注意: 图1 和 图6 , 图2 和 图5 完全一样, 这不是有意为之, 按照 X86 的函数调用机制就是这样的. 在被调用函数(swap)执行 popq % rbp, 这条指令就是要恢复调用函数(main)的rbp, 执行 ret 这条指令就是要恢复调用函数(main)的下一条指令的地址. 也就是将 pc 的值恢复为 X, 这样就可以接着执行了嘛. 也就是所谓的恢复调用者(main)的栈帧. 也就是 main 函数调用 swap 函数(call 指令)保留 main 的状态(也就是 main 函数的 rbp 和 pc), swap 执行到最后(popq, ret)负责恢复现场(也就是恢复 main 函数的 rbp 和 pc). call 和 ret 指令的也分别有 push %rip 和 pop %rip 的作用. 很对称的操作!
+> 注意: 图1 和 图6 , 图2 和 图5 完全一样, 这不是有意为之, 按照 X86 的函数调用机制就是这样的. 在被调用函数(swap)执行 popq % rbp, 这条指令就是要恢复调用函数(main)的 rbp, 执行 ret 这条指令就是要恢复调用函数(main)的下一条指令的地址. 也就是将 pc 的值恢复为 X, 这样就可以接着执行了嘛. 也就是所谓的恢复调用者(main)的栈帧. 也就是 main 函数调用 swap 函数(call 指令)保留 main 的状态(也就是 main 函数的 rbp 和 pc), swap 执行到最后(popq, ret)负责恢复现场(也就是恢复 main 函数的 rbp 和 pc). call 和 ret 指令的也分别有 push %rip 和 pop %rip 的作用. 很对称的操作!
 
 # bombs
-``` 
-pushq   %rbp  // 保留上一个函数(也就是调用者)的栈基址
-movq    %rsp, %rbp // 新函数的栈基址. 一个新的栈帧 sp 和 bp 指向的是同一个地址
+```gas
+pushq   %rbp  ; 保留上一个函数(也就是调用者)的栈基址
+movq    %rsp, %rbp ; 新函数的栈基址. 一个新的栈帧 sp 和 bp 指向的是同一个地址
 ```
 > 一个所谓的栈帧(stack frame)就是由 sp(stack pointer) 和 bp(base pointer) 这两个寄存器来维护的.
 这两句会出现在每一个函数的开始, 那么问题来了 main 函数里面保留的是哪一个调用函数的栈基址呢? 个人推测, 不一定正确, 我们知道创建进程(线程)是 OS 内核的功能, 当然进程销毁也是内核的功能. 内核同样维护着属于内核空间的栈帧, 当进程创建完毕后, 我们写的 C 代码应该是被内核里的函数调用的, 这样的话 main 里面 pushq %rbp 应该是保留的内核函数的栈基址. 这样 main 的 ret 返回后就能接着执行内核函数里面的逻辑了. (估计也就是销毁进程一系列操作了, 这样才能把分配的资源收回来啊!)

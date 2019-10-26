@@ -4,7 +4,8 @@ date: 2019-05-20 14:22:49
 tags: csapp
 ---
 # Disk Controller
-> 我们知道定位一个磁盘空间需要三个参数(platter, track, sector). 但是 cpu 不使用这么麻烦的方式, cpu 使用的是逻辑盘号. 也就是磁盘控制器将逻辑盘号翻译成 platter, track, sector. 磁盘控制器充当一个中间层. 
+> 我们知道定位一个磁盘空间需要三个参数(platter, track, sector). 但是 cpu 不使用这么麻烦的方式, cpu 使用的是逻辑盘号. 也就是磁盘控制器将逻辑盘号翻译成 platter, track, sector. 磁盘控制器充当一个中间层. 也就是只关心逻辑盘号, 不关心具体的(platter, track, sector).
+> 通过逻辑盘号将三维的(platter, track, sector) 转换为一维数组, 这就是抽象的意义啊. 这就是降维思维嘛.
 
 # Memory Hierarchy
 > 我们知道不同类型的存储, 每一个 bit 的价格不一样, 元件不同, 速度也不同. 世上事情大抵如此,不会集所有优点于一身.  
