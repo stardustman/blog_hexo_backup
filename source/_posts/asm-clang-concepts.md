@@ -2,6 +2,7 @@
 title: asm-clang-concepts
 date: 2019-06-25 16:57:59
 tags: ["asm"]
+copyright: true
 ---
 
 C 语言里的概念在 X86-64 汇编层面的分析. 汇编风格使用 AT&T 风格. 编译器是 gcc-x86-64-9.1
@@ -496,6 +497,58 @@ test_variable_shadow():
 ## 汇编代码分析
 {% asset_img variable_shadowing.png 块级变量隐藏  %}
 
+# funcation pointer
+> A function pointer can be declared as: (return type of function) (*name of pointer) (type of function arguments)
+
+## C 代码
+```cpp
+#include<stdio.h> 
+int add (int a, int b)
+{
+    return a + b;
+} 
+
+int main(void)
+{
+    int(*fptr)(int,int); // Function pointer 
+    fptr = add; // Assign address to function pointer 
+    add(2,3);
+    fptr(2,3); 
+    return 0;
+}
+```
+
+## 汇编分析
+```x86asm
+add(int, int):
+        pushq   %rbp
+        movq    %rsp, %rbp
+        movl    %edi, -4(%rbp)
+        movl    %esi, -8(%rbp)
+        movl    -4(%rbp), %edx
+        movl    -8(%rbp), %eax
+        addl    %edx, %eax
+        popq    %rbp
+        ret
+main:
+        pushq   %rbp ; 保存调用者的 rbp
+        movq    %rsp, %rbp ; 开辟 main 的栈帧
+        subq    $16, %rsp  ; 分配栈帧空间
+        movq    $add(int, int), -8(%rbp) ; 将 add(int, int) 第一条指令的地址保存在 rbp - 8 这个位置处
+        movl    $3, %esi ; 从右往左保存第一个参数
+        movl    $2, %edi ; 从右往左保存第二个参数
+        call    add(int, int) ; 正常的 call 调用
+        movq    -8(%rbp), %rax ; 将 add(int, int) 的地址复制到 rax 寄存器
+        movl    $3, %esi ; 从右往左保存第一个参数
+        movl    $2, %edi ; 从右往左保存第二个参数
+        call    *%rax    ; 通过函数指针调用函数
+        movl    $0, %eax
+        leave
+        ret
+```
+
+{% asset_img function-pointer.png 函数指针 %}
+
 # references
 
 1. [pointer](https://en.wikipedia.org/wiki/Pointer_(computer_programming))
@@ -505,3 +558,4 @@ test_variable_shadow():
 5. [movsd](http://faydoc.tripod.com/cpu/movsd.htm)
 6. [pass-2d-array-parameter-c](https://www.geeksforgeeks.org/pass-2d-array-parameter-c/)
 7. [Variable Shadowing](https://en.wikipedia.org/wiki/Variable_shadowing)
+8. [function pointer](https://www.thegeekstuff.com/2012/01/advanced-c-pointers)
