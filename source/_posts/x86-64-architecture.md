@@ -10,12 +10,14 @@ copyright: true
 ## Intel 8086
 
 ### 16 bit processor
+
 > `16-bit` is a computer hardware device or software program capable of transferring 16 bits of data at a time. 一次传输 16 bits 的数据
 > For example, early computer processors (e.g., 8088 and 80286) were 16-bit processors, meaning they were capable of working with 16-bit binary numbers (decimal number up to 65,535). Anything larger and the computer would need to break the number into smaller pieces.
 
 ### 1M 的寻址空间带来的问题与解决方法
 
 #### Intel 8086 地址引脚
+
 {% asset_img intel8086_address.png Intel 8086 寻址空间 %} 
 
 > 上图的 AD<sub>0</sub> ~ AD<sub>15</sub> 是复用(Multiplex)引脚
@@ -48,7 +50,7 @@ offset address 是 16 bit, 决定了一个 segment 的范围是 64K. 将 1M 的�
 
 ##### stack segment(SS) + stack pointer(SP)
 > stack segment 存放 segment address, 这个是专门的栈帧段寄存器.
-> stack pointer 存放 offset address, 这个专门的记录栈帧的寄存器. 
+> stack pointer 存放 offset address, 这个专门的记录栈顶的寄存器. 
 > 所以访问函数栈帧的 `物理地址 = 16 * SS + SP`
 
 > 注意: 如果令 SS = 0, 那么访问函数栈帧的 `物理地址 = SP`, 也就是只能访问 64K 的空间.
@@ -83,3 +85,4 @@ offset address 是 16 bit, 决定了一个 segment 的范围是 64K. 将 1M 的�
 7. [memory-segmentation-8086-microprocessor](https://www.geeksforgeeks.org/memory-segmentation-8086-microprocessor/)
 8. [Advanced Microcomputer Programming](https://www.cs.usfca.edu/~cruse/cs630f06/)
 9. [16 bit processor mean?](https://www.computerhope.com/jargon/num/16bit.htm)
+10. [memory layout](https://cgnail.github.io/academic/mem-layout/)
