@@ -214,3 +214,6 @@ movq    %rsp, %rbp ; 新函数的栈基址. 一个新的栈帧 sp 和 bp 指向�
 5. [how jump work](http://chortle.ccsu.edu/assemblytutorial/Chapter-17/ass17_2.html)
 6. [stack pointer](https://en.wikipedia.org/wiki/Stack_register)
 7. [call stack](https://en.wikipedia.org/wiki/Call_stack)
+8. [stack-winding(push)-unwinding(pop)](https://www.bogotobogo.com/cplusplus/stackunwinding.php)
+9. [understand-heap-assembly](https://www.bogotobogo.com/cplusplus/assembly.php)
+10. [eax-x86-register-meaning-and-history](https://keleshev.com/eax-x86-register-meaning-and-history/)
