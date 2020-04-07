@@ -395,6 +395,87 @@ root@aliyun:~/blog# cat .git/refs/heads/master
 ## git add | git commit | git branch 图解
 {% asset_img git.svg  git %}
 
+## Fast-forward Merge
+> 两次 git add 和 git commit 之后，创建 `new-branch` ，在 `new-branch` 进行了修改。
+> 但是 `master` 分支没有做任何更改。也就是 `master` 此时分支落后了 `new-branch` 分支。
+> `new-branch` 分支的修改 `master` 分支怎样看到呢？可以进行所谓的 `Fast-forward merge`。
+
+### 切换到 master 分支
+```
+root@aliyun:~/blog# git checkout master  # 切换到 master 分支
+Switched to branch 'master'
+root@aliyun:~/blog# cat .git/refs/heads/master # master 分支仍然指向第二次的 commit。
+558e28c67089eea9bdfbfd748d32baa8f2ce944e
+root@aliyun:~/blog# tree .git/objects/ # 查看 objects 对象。
+.git/objects/
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── info
+└── pack
+
+11 directories, 10 files
+```
+
+### 合并 new-branch 分支到 master 分支
+
+```
+root@aliyun:~/blog# git merge new-branch # 合并 new-branch 分支
+Updating 558e28c..ce907fa ### 更新 558e 这个object
+Fast-forward # fast-forward
+ file3 | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 file3
+root@aliyun:~/blog# ls
+file1  file2  file3
+root@aliyun:~/blog# tree .git/objects/ # 查看 objects 对象。并没增加任何 object
+.git/objects/
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── info
+└── pack
+
+11 directories, 10 files
+root@aliyun:~/blog# cat .git/refs/heads/master 
+ce907fabd08138058b05428d7cac017507b33c44 # 更新了 master 指向，指向了 new-branch 的 commit。
+
+```
+
+### Fast-Forward 图解
+{% asset_img fast-forward-merge.svg  git fast forward %}
 
 ## Reference
 1. [git-under-the-hood](https://www.lzane.com/slide/git-under-the-hood/index.html#/)
