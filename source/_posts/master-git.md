@@ -477,6 +477,158 @@ ce907fabd08138058b05428d7cac017507b33c44 # 更新了 master 指向，指向了 n
 ### Fast-Forward 图解
 {% asset_img fast-forward-merge.svg  git fast forward %}
 
+## 删除 master 分支上的 file1 文件，然后提交
+
+```
+root@aliyun:~# cp -r blog blog-delete # 复制一份，在 master 分支上删除 file1
+root@aliyun:~# cd blog-delete/
+root@aliyun:~/blog-delete# ls
+file1  file2  file3
+root@aliyun:~/blog-delete# tree .git/objects/ # 删除前的 git objects
+.git/objects/
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── info
+└── pack
+
+11 directories, 10 files
+root@aliyun:~/blog-delete# rm file1 # 删除file1
+root@aliyun:~/blog-delete# git status
+On branch master
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	deleted:    file1
+
+no changes added to commit (use "git add" and/or "git commit -a")
+root@aliyun:~/blog-delete# git add file1 # 修改添加到 working tree
+root@aliyun:~/blog-delete# tree .git/objects/ # 注意，此时的并没有删除或者增加 git objects
+.git/objects/
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── info
+└── pack
+
+11 directories, 10 files
+root@aliyun:~/blog-delete# git status
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	deleted:    file1
+
+root@aliyun:~/blog-delete# git commit -m "delete file1 on master" # 提交这个修改到 repository
+[master f24e8b6] delete file1 on master
+ 1 file changed, 1 deletion(-)
+ delete mode 100644 file1
+root@aliyun:~/blog-delete# tree .git/objects/ # 查看此时的 git objects
+.git/objects/
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c # blob:file1 仍然在 git objects 中
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba  # 新添加一个 tree
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088 # 新添加一个 commit
+├── info
+└── pack
+
+13 directories, 12 files
+root@aliyun:~/blog-delete# git cat-file -s ba61 # ba61 的大小,zlib compressed data
+66
+root@aliyun:~/blog-delete# git cat-file -t ba61 # ba61 的类型
+tree
+root@aliyun:~/blog-delete# git cat-file -p ba61
+100644 blob c200906efd24ec5e783bee7f23b5d7c941b0c12c	file2 # master 分支剩下的 file2
+100644 blob 2e799a48d8c045b814c3862af40dea98bdde790a	file3 # master 分支剩下的 file3
+root@aliyun:~/blog-delete# git cat-file -s f24e
+207
+root@aliyun:~/blog-delete# git cat-file -t f24e # 新加的 commit object
+commit
+root@aliyun:~/blog-delete# git cat-file -p f24e
+tree ba61ba35d824408f8135ec77b7efdcdfc0281fba # 新加的 tree object
+parent ce907fabd08138058b05428d7cac017507b33c44 # delete file1 之前的 commit object
+author root <root@aliyun> 1586307459 +0800
+committer root <root@aliyun> 1586307459 +0800
+
+delete file1 on master
+root@aliyun:~/blog-delete# cat .git/refs/heads/master # master 分支指向了新的 commit
+f24e8b6fb771347156b615c795f7fd886dc49088
+root@aliyun:~/blog-delete# cat .git/logs/refs/heads/
+master      new-branch  
+root@aliyun:~/blog-delete# cat .git/logs/refs/heads/master # 查看 master 分支的提交日志
+0000000000000000000000000000000000000000 73622e96d5b5389d63dd74e3c40db9d4c4296ff5 root <root@aliyun> 1578027036 +0800	commit (initial): add file1 and file2
+73622e96d5b5389d63dd74e3c40db9d4c4296ff5 558e28c67089eea9bdfbfd748d32baa8f2ce944e root <root@aliyun> 1578036269 +0800	commit: modify file1
+558e28c67089eea9bdfbfd748d32baa8f2ce944e ce907fabd08138058b05428d7cac017507b33c44 root <root@aliyun> 1586241477 +0800	merge new-branch: Fast-forward
+ce907fabd08138058b05428d7cac017507b33c44 f24e8b6fb771347156b615c795f7fd886dc49088 root <root@aliyun> 1586307459 +0800	commit: delete file1 on master
+```
+
+### master 分支删除 file1 图解
+{% asset_img git-delete-a-file-and-commit.svg  delete file1 on master %}
+
+#### master 分支删除 file1 图解分析
+master 分支 git 中删除一个文件的实质是：
+1. 生成一个 `tree object ba61ba`，指向剩下的每一个文件的最新的 blob object。`blob c20090	file2` 和 `blob 2e799a	file3`
+2. 生成一个 `commit f24e8b` 节点，指向本次提交的上一个 `commit object(ce907f)` 和这次提交生成的 `tree object(ba61ba)`。
+3. 移动 `master` 和 `HEAD` 的指向，指向本次提交的 `commit object f24e8b`。
+4. 在 master 的 `.git/logs/refs/heads/master` 分支添加本次提交的 git log。
+5. 删除 file1，但是 git object 下 file1 的 `blob(58c9bd)` 并没有删除。这也意味着可以恢复 file1。
+6. 其他分支同理。
+
+
+
+
 ## Reference
 1. [git-under-the-hood](https://www.lzane.com/slide/git-under-the-hood/index.html#/)
 2. [Bilibili-git-under-the-hood](https://www.bilibili.com/video/av77252063)
