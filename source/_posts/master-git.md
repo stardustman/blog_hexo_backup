@@ -95,6 +95,7 @@ git cat-file -p 58c9bd
 ### git commit
 
 > Stores the current contents of the index in a new commit along with a log message from the user describing the changes.
+> A *commit* in a git repository records a *snapshot of all the files* in your directory.
 
 #### 执行 git commit -m "add file1 and file2"
 
@@ -187,6 +188,8 @@ git commit: 向 `.git/objects` 添加类型是 `tree` 和 `commit` 的文件
 ## git branch
 
 >  List, create, or delete branches
+>  Branches in Git are incredibly lightweight as well. They are simply pointers to a specific commit -- nothing more. 仅仅是添加了一个指向特定 commit 的指针。
+> a branch essentially says "I want to include the work of this commit and all parent commits." 一个分支就是我想要这个 commit 以及这个 commit 的所有 `parent commits`
 
 ### 创建一个 `new-branch` 的分支
 ```sh
@@ -276,6 +279,7 @@ ref: refs/heads/new-branch
 root@aliyun:~/blog# cat .git/refs/heads/new-branch
 558e28c67089eea9bdfbfd748d32baa8f2ce944e # 指向了第二次 commit 的 hash值
 ```
+
 由此可知 git branch new-branch 创建一个分支,实际上做了两件事情:
 1. 添加 .git/logs/refs/heads/new-branch 记录该分支的 `log`
 2. 添加 .git/refs/heads/new-branch 指向最新的 `commit`
@@ -625,6 +629,524 @@ master 分支 git 中删除一个文件的实质是：
 4. 在 master 的 `.git/logs/refs/heads/master` 分支添加本次提交的 git log。
 5. 删除 file1，但是 git object 下 file1 的 `blob(58c9bd)` 并没有删除。这也意味着可以恢复 file1。
 6. 其他分支同理。
+
+## 合并分支(combine work)
+
+### 使用 git merge
+
+> Merging in Git **creates a special commit** that has **two unique parents**. A commit with two parents essentially means "I want to include all the work from this parent over here and this one over here, and the set of all their parents."
+
+#### new-branch 分支添加 file4
+
+##### new-branch 分支添加 file4 步骤
+```
+root@aliyun:~# cd blog-delete
+root@aliyun:~/blog-delete# ls
+file2  file3
+root@aliyun:~/blog-delete# git branch --list  # 查看分支
+* master
+  new-branch
+root@aliyun:~/blog-delete# git checkout new-branch  # 切换到 new-branch
+Switched to branch 'new-branch'
+root@aliyun:~/blog-delete# ls
+file1  file2  file3
+root@aliyun:~/blog-delete# echo 444 > file4 # 创建 file4
+root@aliyun:~/blog-delete# git status
+On branch new-branch
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	file4
+
+nothing added to commit but untracked files present (use "git add" to track)
+root@aliyun:~/blog-delete# tree .git/objects/
+.git/objects/
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088
+├── info
+└── pack
+
+13 directories, 12 files
+root@aliyun:~/blog-delete# git add file4 # 添加 file4
+root@aliyun:~/blog-delete# tree .git/objects/
+.git/objects/
+├── 1e
+│   └── 6fd033863540bfb9eadf22019a6b4b3de7d07a # blob:file4
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088
+├── info
+└── pack
+
+14 directories, 13 files
+root@aliyun:~/blog-delete# git commit -m "add file4 on new-branch"
+[new-branch c9918ce] add file4 on new-branch
+ 1 file changed, 1 insertion(+)
+ create mode 100644 file4
+root@aliyun:~/blog-delete# tree .git/objects/
+.git/objects/
+├── 09
+│   └── 77e7b9e8643eaa75b679d7e82b048723e9f491 # 4:tree
+├── 1e
+│   └── 6fd033863540bfb9eadf22019a6b4b3de7d07a # blob:file4
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── c9
+│   └── 918cea80e46648c4e98da5b1c4b072f0794795
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44 # 4:commit
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088
+├── info
+└── pack
+
+16 directories, 15 files
+root@aliyun:~/blog-delete# git cat-file -s 0977 # 新加的 tree object
+132
+root@aliyun:~/blog-delete# git cat-file -t 0977
+tree
+root@aliyun:~/blog-delete# git cat-file -p 0977 # new-branch 分支上所有文件的 snapshot
+100644 blob 55bd0ac4c42e46cd751eb7405e12a35e61425550	file1
+100644 blob c200906efd24ec5e783bee7f23b5d7c941b0c12c	file2
+100644 blob 2e799a48d8c045b814c3862af40dea98bdde790a	file3
+100644 blob 1e6fd033863540bfb9eadf22019a6b4b3de7d07a	file4
+root@aliyun:~/blog-delete# git cat-file -s 1e6f # new-branch 分支新加的 file4
+4
+root@aliyun:~/blog-delete# git cat-file -t 1e6f 
+blob
+root@aliyun:~/blog-delete# git cat-file -p 1e6f
+444
+root@aliyun:~/blog-delete# git cat-file -s c991 # 新的 commit object
+208
+root@aliyun:~/blog-delete# git cat-file -t c991
+commit
+root@aliyun:~/blog-delete# git cat-file -p c991
+tree 0977e7b9e8643eaa75b679d7e82b048723e9f491 # 本次生成的 tree object
+parent ce907fabd08138058b05428d7cac017507b33c44 # 上一次 commit
+author root <root@aliyun> 1586330993 +0800
+committer root <root@aliyun> 1586330993 +0800
+
+add file4 on new-branch # git commit-m 的信息
+root@aliyun:~/blog-delete-new-branch-file4# git checkout master # 切换到 master
+Switched to branch 'master'
+root@aliyun:~/blog-delete-new-branch-file4# ls # 查看 master 分支的文件
+file2  file3
+root@aliyun:~/blog-delete-new-branch-file4# tree .git/objects/ # 在 master 分支查看 objects
+.git/objects/ # 和在 new-branch 分支上看到的一样
+├── 09
+│   └── 77e7b9e8643eaa75b679d7e82b048723e9f491
+├── 1e
+│   └── 6fd033863540bfb9eadf22019a6b4b3de7d07a
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── c9
+│   └── 918cea80e46648c4e98da5b1c4b072f0794795
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088
+├── info
+└── pack
+
+16 directories, 15 files 
+
+```
+
+##### new-branch 分支添加 file4 图解 
+
+{% asset_img new-branch-add-file4.svg  new-branch-add-file4 %}
+
+#### master 分支添加 file5
+
+##### master 分支添加 file5 步骤
+```
+root@aliyun:~# cp -r blog-delete blog-delete-master-file5 # 复制一份
+root@aliyun:~# cd blog-delete-master-file5/
+root@aliyun:~/blog-delete-master-file5# ls
+file1  file2  file3  file4
+root@aliyun:~/blog-delete-master-file5# git branch --list 
+  master
+* new-branch
+root@aliyun:~/blog-delete-master-file5# git checkout master # 切换到 master
+Switched to branch 'master'
+root@aliyun:~/blog-delete-master-file5# echo 555 > file5 创建 file5
+root@aliyun:~/blog-delete-master-file5# tree .git/objects/
+.git/objects/
+├── 09
+│   └── 77e7b9e8643eaa75b679d7e82b048723e9f491
+├── 1e
+│   └── 6fd033863540bfb9eadf22019a6b4b3de7d07a
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── c9
+│   └── 918cea80e46648c4e98da5b1c4b072f0794795
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088
+├── info
+└── pack
+
+16 directories, 15 files
+root@aliyun:~/blog-delete-master-file5# git add file5 
+root@aliyun:~/blog-delete-master-file5# tree .git/objects/
+.git/objects/
+├── 09
+│   └── 77e7b9e8643eaa75b679d7e82b048723e9f491
+├── 1e
+│   └── 6fd033863540bfb9eadf22019a6b4b3de7d07a
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 37
+│   └── 49383ded246790596d2f39db4dd8b71f525bbc
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── c9
+│   └── 918cea80e46648c4e98da5b1c4b072f0794795
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088
+├── info
+└── pack
+
+17 directories, 16 files
+root@aliyun:~/blog-delete-master-file5# git commit -m "add file5 on master"
+[master 3de903f] add file5 on master
+ 1 file changed, 1 insertion(+)
+ create mode 100644 file5
+root@aliyun:~/blog-delete-master-file5# tree .git/objects/
+.git/objects/
+├── 09
+│   └── 77e7b9e8643eaa75b679d7e82b048723e9f491
+├── 1e
+│   └── 6fd033863540bfb9eadf22019a6b4b3de7d07a
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 37
+│   └── 49383ded246790596d2f39db4dd8b71f525bbc # blob:file5
+├── 3d
+│   └── e903f0c523d57b4880be68bacb1eaa1195ebac #5:commit
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── c9
+│   └── 918cea80e46648c4e98da5b1c4b072f0794795
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088
+├── f5
+│   └── 4ecef60b4376ae5531032cbeaade01184da4fa # 5:tree
+├── info
+└── pack
+
+19 directories, 18 files
+root@aliyun:~/blog-delete-master-file5# git cat-file -t 3de90 # 本次的 commit object
+commit
+root@aliyun:~/blog-delete-master-file5# git cat-file -s 3de90
+204
+root@aliyun:~/blog-delete-master-file5# git cat-file -p 3de90
+tree f54ecef60b4376ae5531032cbeaade01184da4fa
+parent f24e8b6fb771347156b615c795f7fd886dc49088
+author root <root@aliyun> 1586340888 +0800
+committer root <root@aliyun> 1586340888 +0800
+
+add file5 on master
+root@aliyun:~/blog-delete-master-file5# git cat-file -t f54ece # 本次的 tree objet
+tree
+root@aliyun:~/blog-delete-master-file5# git cat-file -s f54ece
+99
+root@aliyun:~/blog-delete-master-file5# git cat-file -p f54ece
+100644 blob c200906efd24ec5e783bee7f23b5d7c941b0c12c	file2 # master 分支上的 file2
+100644 blob 2e799a48d8c045b814c3862af40dea98bdde790a	file3 # master 分支上的 file3
+100644 blob 3749383ded246790596d2f39db4dd8b71f525bbc	file5 # master 分支上的 file5
+root@aliyun:~/blog-delete-master-file5# git cat-file -t 374938 # file5
+blob
+root@aliyun:~/blog-delete-master-file5# git cat-file -s 374938
+4
+root@aliyun:~/blog-delete-master-file5# git cat-file -p 374938
+555
+
+```
+
+##### master 分支添加 file5 图解
+
+{% asset_img git-master-add-file5.svg  master-add-file5 %}
+
+#### master 分支合并到 new-branch 分支
+
+##### master 分支合并到 new-branch 分支步骤
+```
+root@aliyun:~# cp -r blog-delete-master-file5/ blog-delete-file4-file5-merge
+root@aliyun:~# cd blog-delete-file4-file5-merge/
+root@aliyun:~/blog-delete-file4-file5-merge# git branch --list
+* master
+  new-branch
+root@aliyun:~/blog-delete-file4-file5-merge# tree .git/objects/
+09/   1e/   2e/   37/   3d/   55/   58/   61/   73/   b7/   ba/   c2/   c9/   ce/   d9/   f2/   f5/   info/ pack/ 
+root@aliyun:~/blog-delete-file4-file5-merge# tree .git/objects/
+.git/objects/
+├── 09
+│   └── 77e7b9e8643eaa75b679d7e82b048723e9f491
+├── 1e
+│   └── 6fd033863540bfb9eadf22019a6b4b3de7d07a
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 37
+│   └── 49383ded246790596d2f39db4dd8b71f525bbc
+├── 3d
+│   └── e903f0c523d57b4880be68bacb1eaa1195ebac
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── c9
+│   └── 918cea80e46648c4e98da5b1c4b072f0794795
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088
+├── f5
+│   └── 4ecef60b4376ae5531032cbeaade01184da4fa
+├── info
+└── pack
+
+19 directories, 18 files
+root@aliyun:~/blog-delete-file4-file5-merge# git checkout new-branch # 切换到 new-branch
+Switched to branch 'new-branch'
+root@aliyun:~/blog-delete-file4-file5-merge# git merge master # 把 master 分支合并到当前分支，也就是 new-branch 分支
+Removing file1 # master 分支上删除了 file1，new-branch 分支合并时也会删掉。
+Merge made by the 'recursive' strategy.
+ file1 | 1 -
+ file5 | 1 +
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ delete mode 100644 file1
+ create mode 100644 file5
+root@aliyun:~/blog-delete-file4-file5-merge# tree .git/objects/
+.git/objects/
+├── 09
+│   └── 77e7b9e8643eaa75b679d7e82b048723e9f491
+├── 1e
+│   └── 6fd033863540bfb9eadf22019a6b4b3de7d07a
+├── 2e
+│   └── 799a48d8c045b814c3862af40dea98bdde790a
+├── 37
+│   └── 49383ded246790596d2f39db4dd8b71f525bbc
+├── 3d
+│   └── e903f0c523d57b4880be68bacb1eaa1195ebac
+├── 4f
+│   └── ed41461bcfd7157b71d757b2fe70e3d7317f94 # 6:tree 合并生成的 tree object
+├── 55
+│   ├── 8e28c67089eea9bdfbfd748d32baa8f2ce944e
+│   └── bd0ac4c42e46cd751eb7405e12a35e61425550
+├── 58
+│   └── c9bdf9d017fcd178dc8c073cbfcbb7ff240d6c
+├── 61
+│   └── 74c3edb1e8dc4f1692b69fd43c8c6af85ce560
+├── 73
+│   └── 622e96d5b5389d63dd74e3c40db9d4c4296ff5
+├── b7
+│   └── 2118da210e8e3f4127cfc16cc819eff58e42e3
+├── ba
+│   └── 61ba35d824408f8135ec77b7efdcdfc0281fba
+├── c2
+│   └── 00906efd24ec5e783bee7f23b5d7c941b0c12c
+├── c9
+│   └── 918cea80e46648c4e98da5b1c4b072f0794795
+├── ce
+│   └── 907fabd08138058b05428d7cac017507b33c44
+├── d9
+│   └── 64f468f776fac72a049a884ae24e7dbb838fd0
+├── f2
+│   └── 4e8b6fb771347156b615c795f7fd886dc49088
+├── f5
+│   └── 4ecef60b4376ae5531032cbeaade01184da4fa
+├── fc
+│   └── 094b5b4e7a0f4028c5735d95f844b1aea1a9b6 # 6:commit 合并生成的 commit object
+├── info
+└── pack
+
+21 directories, 20 files
+root@aliyun:~/blog-delete-file4-file5-merge# git cat-file -s 4fed41
+132
+root@aliyun:~/blog-delete-file4-file5-merge# git cat-file -t 4fed41
+tree
+root@aliyun:~/blog-delete-file4-file5-merge# git cat-file -p 4fed41
+100644 blob c200906efd24ec5e783bee7f23b5d7c941b0c12c	file2 
+100644 blob 2e799a48d8c045b814c3862af40dea98bdde790a	file3
+100644 blob 1e6fd033863540bfb9eadf22019a6b4b3de7d07a	file4
+100644 blob 3749383ded246790596d2f39db4dd8b71f525bbc	file5
+root@aliyun:~/blog-delete-file4-file5-merge# git cat-file -s fc094b # 本次合并生成的 commit object
+270
+root@aliyun:~/blog-delete-file4-file5-merge# git cat-file -t fc094b
+commit
+root@aliyun:~/blog-delete-file4-file5-merge# git cat-file -p fc094b
+tree 4fed41461bcfd7157b71d757b2fe70e3d7317f94 # 本次合并时两个分支的 snapshot
+parent c9918cea80e46648c4e98da5b1c4b072f0794795 # new branch 分支合并时最新的 commit
+parent 3de903f0c523d57b4880be68bacb1eaa1195ebac # master 分支合并时最新的 commit
+author root <root@aliyun> 1586344983 +0800
+committer root <root@aliyun> 1586344983 +0800
+
+Merge branch 'master' into new-branch
+
+root@aliyun:~/blog-delete-file4-file5-merge# cat .git/refs/heads/new-branch # new branch 已经指向了新生成的 commit 节点
+fc094b5b4e7a0f4028c5735d95f844b1aea1a9b6
+root@aliyun:~/blog-delete-file4-file5-merge# cat .git/refs/heads/master # master 分支没有发生改变
+3de903f0c523d57b4880be68bacb1eaa1195ebac
+root@aliyun:~/blog-delete-file4-file5-merge# cat .git/logs/refs/heads/new-branch  # new branch 分支 log
+0000000000000000000000000000000000000000 558e28c67089eea9bdfbfd748d32baa8f2ce944e root <root@aliyun> 1578037705 +0800	branch: Created from master
+558e28c67089eea9bdfbfd748d32baa8f2ce944e ce907fabd08138058b05428d7cac017507b33c44 root <root@aliyun> 1578039532 +0800	commit: add file3 on new-branch
+ce907fabd08138058b05428d7cac017507b33c44 c9918cea80e46648c4e98da5b1c4b072f0794795 root <root@aliyun> 1586330993 +0800	commit: add file4 on new-branch
+c9918cea80e46648c4e98da5b1c4b072f0794795 fc094b5b4e7a0f4028c5735d95f844b1aea1a9b6 root <root@aliyun> 1586344983 +0800	merge master: Merge made by the 'recursive' strategy. # 本次 merge 的 log
+
+
+```
+
+##### master 分支合并到 new-branch 图解
+{% asset_img git-merge-master.svg  git-merge-master %}
+
+master 分支合并到 new-branch 分支实质：
+1. 生成一个新的 `tree object 4f1d41` 指向 `master` 分支和 `new-branch` 分支共有的`文件 blob`。
+2. 生成一个新的 `commit object fc094b` 指向新生成的 `tree object 4f1d41`以及合并前的 master 分支的 commit
+和 new-branch 分支的 commit。
+3. `.git/refs/heads/new-branch`指向新生成的 `commit object fc094b`。
+4. `.git/logs/refs/heads/new-branch` 添加本次 merge 的 log。
+5. `.git/refs/heads/master` master 分支的指向并没有发生改变。
 
 
 
