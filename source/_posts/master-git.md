@@ -1157,3 +1157,4 @@ master 分支合并到 new-branch 分支实质：
 3. [SHA-1](https://zh.wikipedia.org/wiki/SHA-1)
 4. [git-branch](https://learngitbranching.js.org/)
 5. [visual-git-reference](http://marklodato.github.io/visual-git-guide/index-en.html)
+6. [visualized-useful-git-commands](https://dev.to/lydiahallie/cs-visualized-useful-git-commands-37p1)

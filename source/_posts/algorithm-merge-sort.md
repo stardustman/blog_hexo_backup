@@ -64,7 +64,7 @@ int main(){
 }
 ```
 
-### x64bit 汇编代码分析
+### x64 汇编代码分析
 
 ```
 mergesort:     file format elf64-x86-64 ; 64bits 汇编代码
@@ -437,12 +437,12 @@ Disassembly of section .text: ; 代码区
  952:	31 c0                	xor    %eax,%eax
  954:	c7 45 d0 09 00 00 00 	movl   $0x9,-0x30(%rbp) ; 0x9 复制到 rbp - 0x30 地址处。array[0] = 0x9
  95b:	c7 45 d4 03 00 00 00 	movl   $0x3,-0x2c(%rbp) ; 0x3 复制到 rbp - 0x2c 地址处。array[1] = 0x3
- 962:	c7 45 d8 07 00 00 00 	movl   $0x7,-0x28(%rbp) ; 0x7 复制到 rbp - 0x28 地址处。array[1] = 0x7
- 969:	c7 45 dc 05 00 00 00 	movl   $0x5,-0x24(%rbp) ; 0x5 复制到 rbp - 0x24 地址处。array[1] = 0x5
- 970:	c7 45 e0 08 00 00 00 	movl   $0x8,-0x20(%rbp) ; 0x8 复制到 rbp - 0x20 地址处。array[1] = 0x8
- 977:	c7 45 e4 06 00 00 00 	movl   $0x6,-0x1c(%rbp) ; 0x6 复制到 rbp - 0x1c 地址处。array[1] = 0x6
- 97e:	c7 45 e8 04 00 00 00 	movl   $0x4,-0x18(%rbp) ; 0x4 复制到 rbp - 0x28 地址处。array[1] = 0x4
- 985:	c7 45 ec 0a 00 00 00 	movl   $0xa,-0x14(%rbp) ; 0xa 复制到 rbp - 0x14 地址处。array[1] = 0xa
+ 962:	c7 45 d8 07 00 00 00 	movl   $0x7,-0x28(%rbp) ; 0x7 复制到 rbp - 0x28 地址处。array[2] = 0x7
+ 969:	c7 45 dc 05 00 00 00 	movl   $0x5,-0x24(%rbp) ; 0x5 复制到 rbp - 0x24 地址处。array[3] = 0x5
+ 970:	c7 45 e0 08 00 00 00 	movl   $0x8,-0x20(%rbp) ; 0x8 复制到 rbp - 0x20 地址处。array[4] = 0x8
+ 977:	c7 45 e4 06 00 00 00 	movl   $0x6,-0x1c(%rbp) ; 0x6 复制到 rbp - 0x1c 地址处。array[5] = 0x6
+ 97e:	c7 45 e8 04 00 00 00 	movl   $0x4,-0x18(%rbp) ; 0x4 复制到 rbp - 0x28 地址处。array[6] = 0x4
+ 985:	c7 45 ec 0a 00 00 00 	movl   $0xa,-0x14(%rbp) ; 0xa 复制到 rbp - 0x14 地址处。array[7] = 0xa
  98c:	48 8d 45 d0          	lea    -0x30(%rbp),%rax ; rax = &array[0]
  990:	ba 07 00 00 00       	mov    $0x7,%edx ; 第三个参数 7
  995:	be 00 00 00 00       	mov    $0x0,%esi ; 第二个参数 0
@@ -527,8 +527,9 @@ Disassembly of section .fini:
 {% asset_img merge-sort-stack-frame-analysis.svg  merge-sort-stack-frame-analysis %}
 
 > 栈帧图分析
-> mergeSort_L 对应的是左半侧的 merge。
-> mergeSort_R 对应的是右半侧的 merge。
+> mergeSort_L 对应的是左半侧的 merge。mid 为红色
+> mergeSort_R 对应的是右半侧的 merge。mid 为蓝色
+> merge 对应的是最下层的浅绿色，绿色，深绿色
 
 
 ### array 归并顺序图解分析
@@ -536,6 +537,42 @@ Disassembly of section .fini:
 {% asset_img merge-sort-analysis.svg  merge-sort-analysis %}
 
 > 可以看到对于 array 来说，确实是一半一半 `merge` 的, 这就是分治。
+
+### strace 分析
+
+```
+root@aliyun:~# strace ./mergesort 
+execve("./mergesort", ["./mergesort"], 0x7fff5d5bf0c0 /* 27 vars */) = 0
+brk(NULL)                               = 0x5583b9756000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=39490, ...}) = 0
+mmap(NULL, 39490, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f4ed0097000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\260\34\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=2030544, ...}) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f4ed0095000
+mmap(NULL, 4131552, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f4ecfa89000
+mprotect(0x7f4ecfc70000, 2097152, PROT_NONE) = 0
+mmap(0x7f4ecfe70000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e7000) = 0x7f4ecfe70000
+mmap(0x7f4ecfe76000, 15072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f4ecfe76000
+close(3)                                = 0
+arch_prctl(ARCH_SET_FS, 0x7f4ed00964c0) = 0
+mprotect(0x7f4ecfe70000, 16384, PROT_READ) = 0
+mprotect(0x5583b9675000, 4096, PROT_READ) = 0
+mprotect(0x7f4ed00a1000, 4096, PROT_READ) = 0
+munmap(0x7f4ed0097000, 39490)           = 0
+fstat(1, {st_mode=S_IFCHR|0600, st_rdev=makedev(136, 0), ...}) = 0
+brk(NULL)                               = 0x5583b9756000
+brk(0x5583b9777000)                     = 0x5583b9777000
+write(1, "3 4 5 6 7 8 9 10 ", 173 4 5 6 7 8 9 10 )       = 17
+exit_group(0)                           = ?
++++ exited with 0 +++
+
+```
 
 
 
