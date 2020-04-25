@@ -8,6 +8,7 @@ tags: ["tools"]
 1. [decompiler-Luyten](https://github.com/deathmarine/Luyten)
 2. [decompiler-cfr](http://www.benf.org/other/cfr/)
 3. [byte-code-viewer](https://bytecodeviewer.com/)
+4. [jclasslib](https://github.com/ingokegel/jclasslib/releases)
 
 ## assembly
 1. [godbolt](https://godbolt.org/)
@@ -42,6 +43,7 @@ tags: ["tools"]
 1. [oh-my-zsh](https://ohmyz.sh/)
 
 # working
+
 ## pc
 1. [sinp & paste](https://www.snipaste.com/)
 2. [mubu](https://mubu.com/)
@@ -86,3 +88,5 @@ tags: ["tools"]
 # job
 ## company
 1. [tianyancha](https://www.tianyancha.com/)
+2. [resume](http://cv.ftqq.com/#)
+
