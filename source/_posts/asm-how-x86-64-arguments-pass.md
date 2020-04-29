@@ -57,33 +57,35 @@ int testArgs(long a1,long a2,long a3,long a4,long a5,long a6,long a7,long a8){
 testArgs(long, long, long, long, long, long, long, long):
         pushq   %rbp
         movq    %rsp, %rbp
-        movq    %rdi, -24(%rbp)
-        movq    %rsi, -32(%rbp)
-        movq    %rdx, -40(%rbp)
-        movq    %rcx, -48(%rbp)
-        movq    %r8, -56(%rbp)
-        movq    %r9, -64(%rbp)
-        movq    $0, -8(%rbp) // sum
-        movq    -24(%rbp), %rdx // a1
-        movq    -32(%rbp), %rax // a2
+        movq    %rdi, -24(%rbp) ; a1  栈底
+        movq    %rsi, -32(%rbp) ; a2
+        movq    %rdx, -40(%rbp) ; a3
+        movq    %rcx, -48(%rbp) ; a4
+        movq    %r8, -56(%rbp)  ; a5
+        movq    %r9, -64(%rbp)  ; a6
+        movq    $0, -8(%rbp)    ; sum
+        movq    -24(%rbp), %rdx ; a1
+        movq    -32(%rbp), %rax ; a2
+        addq    %rax, %rdx      ; rdx = a1 + a2
+        movq    -40(%rbp), %rax ; a3
         addq    %rax, %rdx
-        movq    -40(%rbp), %rax // a3
+        movq    -48(%rbp), %rax ; a4
         addq    %rax, %rdx
-        movq    -48(%rbp), %rax // a4
+        movq    -56(%rbp), %rax ; a5
         addq    %rax, %rdx
-        movq    -56(%rbp), %rax // a5
+        movq    -64(%rbp), %rax ; a6
         addq    %rax, %rdx
-        movq    -64(%rbp), %rax // a6
+        movq    16(%rbp), %rax  ; a7，其实是到 main 的栈帧里取的
         addq    %rax, %rdx
-        movq    16(%rbp), %rax  // a7
-        addq    %rax, %rdx
-        movq    24(%rbp), %rax  // a8
+        movq    24(%rbp), %rax  ; a8，其实是到 main 的栈帧里取的
         addq    %rdx, %rax
-        movq    %rax, -8(%rbp)
-        movq    -8(%rbp), %rax
+        movq    %rax, -8(%rbp)  ; sum = rax
+        movq    -8(%rbp), %rax  ; rax = sum 也就是返回值
         popq    %rbp
         ret
 ```
+
+> 综上可知，编译器默认会将所有的参数复制到栈上。
 
 ## 栈帧分析
 {% asset_img x86-64-arguments-pass.png x86-64-arguments-pass %}
