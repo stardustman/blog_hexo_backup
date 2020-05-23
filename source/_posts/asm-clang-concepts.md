@@ -549,6 +549,41 @@ main:
 
 {% asset_img function-pointer.png 函数指针 %}
 
+
+# enum
+
+> 编译器在背后搞鬼，自动为每一个 enum 常量进行编号。
+
+## c 代码
+
+```c
+enum day{ monday, tuesday, wednesday,
+thursday, friday, saturday, sunday};
+
+enum color {
+    RED=1, YELLOW, GREEN
+};
+
+int main(){
+    enum day foo = friday;
+    enum color color = GREEN;
+}
+```
+
+## 汇编分析
+
+```
+main:
+        pushq   %rbp
+        movq    %rsp, %rbp
+        movl    $4, -4(%rbp) ; friday 编号为 4，默认从 0 开始编号。
+        movl    $3, -8(%rbp) ; GREEN 编号为 3
+        movl    $0, %eax
+        popq    %rbp
+        ret
+```
+{% asset_img c-enum.png c 枚举 %}
+
 # references
 
 1. [pointer](https://en.wikipedia.org/wiki/Pointer_(computer_programming))
