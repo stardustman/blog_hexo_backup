@@ -230,3 +230,4 @@ cp "$busybox" "$rootfsDir/bin/busybox"
 
 ## References
 1. [busybox-static](https://raw.githubusercontent.com/moby/moby/a575b0b1384b2ba89b79cbd7e770fbeb616758b3/contrib/mkimage/busybox-static)
+2. [docker-intro](http://jm.taobao.org/2016/05/12/introduction-to-docker/)

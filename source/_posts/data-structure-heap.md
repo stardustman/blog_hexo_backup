@@ -2,6 +2,7 @@
 title: data-structure-heap
 date: 2020-05-18 15:24:05
 tags: ["data structure","binary heap","priority queue","heap sort"]
+qrcode: true
 ---
 
 ### 线性 or 非线性
