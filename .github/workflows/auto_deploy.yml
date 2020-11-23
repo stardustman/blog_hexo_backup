@@ -16,7 +16,7 @@ jobs:
     - name: Checkout # 1. 将仓库内master分支的内容下载到工作目录
       uses: actions/checkout@v2 # 脚本来自 https://github.com/actions/checkout
       with: 
-        submodule: 'true' 
+        submodules: 'true' 
       
     - name: Setup Node.js # 2. 配置Node环境
       uses: actions/setup-node@v1 # 配置脚本来自 https://github.com/actions/setup-node
