@@ -64,9 +64,3 @@ jobs:
         # npm install -g hexo-cli
         # npm ci
  
-        
-  
-    - name: Deploy
-      run: |
-        # publish
-        hexo generate && hexo deploy # 执行部署程序
