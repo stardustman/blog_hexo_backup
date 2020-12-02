@@ -86,3 +86,4 @@ offset address 是 16 bit, 决定了一个 segment 的范围是 64K. 将 1M 的�
 8. [Advanced Microcomputer Programming](https://www.cs.usfca.edu/~cruse/cs630f06/)
 9. [16 bit processor mean?](https://www.computerhope.com/jargon/num/16bit.htm)
 10. [memory layout](https://cgnail.github.io/academic/mem-layout/)
+11. [x86-overview](https://cs.lmu.edu/~ray/notes/x86overview/)

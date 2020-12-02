@@ -153,6 +153,30 @@ github.com.		900	IN	NS	ns1.p16.dynect.net.
 
 ```
 
+## DNS 记录类型
+
+### CNAME
+
+`Canonical Name` 域名指向另一个域名。见下图：
+
+{% asset_img ping-music.163.com.png tcp-ip-stack %}
+
+### A
+
+`address` ip address
+
+### NS
+
+`name server` 保存下一级域名的服务器，只设置成域名
+
+### PTR
+
+`pointer record`，根据 ip 查询域名。类似 ARP，用 ip 找 MAC 地址。
+
+### MX
+
+mail exchange 电子邮件服务器
+
 ## Reference
 1. [DNS 入门](https://www.ruanyifeng.com/blog/2016/06/dns.html)
 2. [Introduction and Layered Network Architecture](http://kilyos.ee.bilkent.edu.tr/~ee538/lecture1.pdf)
