@@ -50,7 +50,7 @@ IP 地址是一个 32bit 的无符号整数。范围是 [0,2^32-1], 一共有 42
 
    {% asset_img ComputerMemoryHierarchy.svg ComputerMemoryHierarchy %}
 
-#####  network layer
+#####  OSI 参考模型
 
   网络每一层，功能不同。
 
@@ -116,3 +116,4 @@ IP 地址是一个 32bit 的无符号整数。范围是 [0,2^32-1], 一共有 42
 8. [network-layer](https://www.cloudflare.com/learning/network-layer/what-is-the-network-layer/)
 9. [internet-protocol](https://www.cloudflare.com/learning/network-layer/internet-protocol/)
 10. [what-is-a-computer-port](https://www.cloudflare.com/learning/network-layer/what-is-a-computer-port/)
+11. [open-systems-interconnection-model](https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/)
