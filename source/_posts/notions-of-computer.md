@@ -50,6 +50,10 @@ IP 地址是一个 32bit 的无符号整数。范围是 [0,2^32-1], 一共有 42
 
    {% asset_img ComputerMemoryHierarchy.svg ComputerMemoryHierarchy %}
 
+##### Typical memory hierarchy
+
+   {% asset_img typical-memory-hierarchy.png typical-memory-hierarchy %}
+
 #####  OSI 参考模型
 
   网络每一层，功能不同。
@@ -60,7 +64,7 @@ IP 地址是一个 32bit 的无符号整数。范围是 [0,2^32-1], 一共有 42
 
 ###  group(分组)
   体量庞大的东西的基层组织。
-  1. 可视为层级结构的最底层。block、page、packet、fragment
+  1. 可视为层级结构的最底层。block、page、packet、fragment、set
   2. 也可以视为不同的模块。module、segment、section
   3. 也可以理解成分类。sort
 
@@ -117,3 +121,4 @@ IP 地址是一个 32bit 的无符号整数。范围是 [0,2^32-1], 一共有 42
 9. [internet-protocol](https://www.cloudflare.com/learning/network-layer/internet-protocol/)
 10. [what-is-a-computer-port](https://www.cloudflare.com/learning/network-layer/what-is-a-computer-port/)
 11. [open-systems-interconnection-model](https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/)
+12. [CSE141-Caching](http://cseweb.ucsd.edu/classes/sp10/cse141/pdf/07/09_CSE141-Caching.pdf)
