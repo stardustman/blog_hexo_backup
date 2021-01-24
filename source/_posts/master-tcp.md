@@ -6,7 +6,7 @@ tags: ["tcp"]
 > The Transmission Control Protocol (TCP) is intended for use as a highly
 reliable **host-to-host** protocol between hosts in **packet-switched** computer communication networks, and in interconnected systems of such networks.
 # TCP header format
-![tcp header](/images/master-tcp-tcp-header.png)
+![tcp header](https://gitee.com/stardustman/pictrues/raw/master/img/master-tcp-tcp-header.png)
 ## basic data transfer
 
 ## reliability
@@ -47,6 +47,6 @@ reliable **host-to-host** protocol between hosts in **packet-switched** computer
 
 
 # 参考链接
-1. [TCP three way handshake 1](https://mp.weixin.qq.com/s?__biz=MzA3MDMwOTcwMg==&mid=2650005578&idx=1&sn=9e4ba700512e68e2dcbd54bfe11bd669&chksm=87398263b04e0b7577be99e43c272147b74030514df3f78b894c5b5cee21a3565cf3e4ceebeb&scene=21#wechat_redirect)
-2. [TCP three way handshake 2](https://mp.weixin.qq.com/s?__biz=MzA3MDMwOTcwMg==&mid=2650005835&idx=1&sn=dd0104635b5510ab6bf4f34ec347fe57&chksm=87398362b04e0a7402a6075b46e9a62855a78408a6dfecf6f7d13d8ae5e0375fab6d84208159&scene=21#wechat_redirect)
+1. [TCP three way handshake 1]()
+2. [TCP three way handshake 2]()
 3. [rfc793](https://tools.ietf.org/html/rfc793)

@@ -13,28 +13,28 @@ Since there are `n` selection lines, there will be 2^n possible combinations of 
 
 > 聚合 I<sub>0</sub>, I<sub>1</sub>, I<sub>2</sub>, I<sub>3</sub> 这 4 个输入, 通过 S1 和 S0 来选择一个输出.
 ### Block diagram of 4x1 Multiplexer
-{% asset_img 4x1_Multiplexer.png 4x1_Multiplexer %}
 
+![4x1_Multiplexer](https://gitee.com/stardustman/pictrues/raw/master/img/4x1_Multiplexer.png)
 ### Y<sub>(output)</sub> 输出值的分析
 
 #### S<sub>1</sub> = 0, S<sub>0</sub> = 0 时 Y 的值由 I<sub>0</sub> 决定
-{% asset_img multiplexers_S1_S0_I0.png multiplexers_S1_S0_I0 %}
 
+![multiplexers_S1_S0_I0](https://gitee.com/stardustman/pictrues/raw/master/img/multiplexers_S1_S0_I0.png)
 > S1 = 0, S0 = 0. 此时的 I1, I2, I3, 无论是 0 还是 1, 对应的 `and gate` 输出都是 0, 对最终输出 `Y` 没有影响. 此时 I0 的输入决定 `Y` 的值. 也就是 `Y` = I0.
 
 #### S<sub>1</sub> = 0, S<sub>0</sub> = 1 时 Y 的值由 I<sub>1</sub> 决定
-{% asset_img multiplexers_S1_S0_I1.png multiplexers_S1_S0_I1 %}
 
+![multiplexers_S1_S0_I1](https://gitee.com/stardustman/pictrues/raw/master/img/multiplexers_S1_S0_I1.png)
 > S1 = 0, S0 = 1. 此时的 I0, I2, I3, 无论是 0 还是 1, 对应的 `and gate` 输出都是 0, 对最终输出 `Y` 没有影响. 此时 I1 的输入决定 `Y` 的值. 也就是 `Y` = I1.
 
 #### S<sub>1</sub> = 1, S<sub>0</sub> = 0 时 Y 的值由 I<sub>2</sub> 决定
-{% asset_img multiplexers_S1_S0_I2.png multiplexers_S1_S0_I2 %}
 
+![multiplexers_S1_S0_I2](https://gitee.com/stardustman/pictrues/raw/master/img/multiplexers_S1_S0_I2.png)
 > S1 = 1, S0 = 0. 此时的 I0, I1, I3, 无论是 0 还是 1, 对应的 `and gate` 输出都是 0, 对最终输出 `Y` 没有影响. 此时 I2 的输入决定 `Y` 的值. 也就是 `Y` = I2.
 
 #### S<sub>1</sub> = 1, S<sub>1</sub> = 0 时 Y 的值由 I<sub>3</sub> 决定
-{% asset_img multiplexers_S1_S0_I3.png multiplexers_S1_S0_I3 %}
 
+![multiplexers_S1_S0_I3](https://gitee.com/stardustman/pictrues/raw/master/img/multiplexers_S1_S0_I3.png)
 > S1 = 1, S0 = 1. 此时的 I0, I1, I2, 无论是 0 还是 1, 对应的 `and gate` 输出都是 0, 对最终输出 `Y` 没有影响. 此时 I3 的输入决定 `Y` 的值. 也就是 `Y` = I3.
 
 ### Truth table of 4x1 Multiplexer 

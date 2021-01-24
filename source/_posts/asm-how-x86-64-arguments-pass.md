@@ -88,8 +88,8 @@ testArgs(long, long, long, long, long, long, long, long):
 > 综上可知，编译器默认会将所有的参数复制到栈上。
 
 ## 栈帧分析
-{% asset_img x86-64-arguments-pass.png x86-64-arguments-pass %}
 
+![x86-64-arguments-pass](https://gitee.com/stardustman/pictrues/raw/master/img/x86-64-arguments-pass.png) #(x86-64-arguments-pass)
 > 上图是执行完 testArgs 前两句汇编的栈帧状态图.
 > 分析:
 > testArgs 中 movq    16(%rbp), %rax  // 将 rbp + 16 地址处的数值(a7)复制到 rax

@@ -80,8 +80,8 @@ explicitly asked for.
 space and bandwidth.
 聚焦在时间局部性上，如果没有较好的空间局部性，提前 `fetch` 了数据，那就浪费了空间和带宽。
 
-{% asset_img cache_organization.svg cache 组织方式 %}
 
+![cache_organization](https://gitee.com/stardustman/pictrues/raw/master/img/cache_organization.svg) #(cache 组织方式)
 
 ###  实例分析
 
@@ -104,11 +104,12 @@ tags bits = 32 - 9 - 6 = 17
 (set) `Associativity` means providing `more than one` place for a cache line to live.
 One group of lines corresponds to each index
 1. it is called a “set”
-2. `Each lin`e in a set is called a `“way”`
+2. `Each line` in a set is called a `“way”`
 3. N-Way associativity requires N parallel comparators
 set = ？
 
 {% asset_img cache-2-ways-cache.svg 2-ways-cache%}
+![2-ways-cache](https://gitee.com/stardustman/pictrues/raw/master/img/cache-2-ways-cache.svg)
 
 ### cache 哪一种 address？
 
@@ -116,8 +117,7 @@ set = ？
 
 #### physical memory address
 
-{% asset_img cache-memory-address-type.svg cache 哪一种 memory address %}
-
+![cache-memory-address-type](https://gitee.com/stardustman/pictrues/raw/master/img/cache-memory-address-type.svg) #(缓存类型)
 
 
 ## References

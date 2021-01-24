@@ -34,7 +34,8 @@ tags: ["cache replacement", "LRU"]
 2.  virtual page 不在缓存队列中，*移除队尾队列节点*，添加代表这个 virtual page 的队列节点到队首。
 
 #### LRU 图解
-{% asset_img lru.svg least recently used %} 
+
+![lru](https://gitee.com/stardustman/pictrues/raw/master/img/lru.svg)
 
 可以看到一直是对`缓存队列队首`操作。
 1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5

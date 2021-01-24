@@ -29,7 +29,8 @@ qrcode: true
 
 #### 二叉堆自我调整图解
 
-{% asset_img binary-heap.svg 二叉堆的自我调整 %}
+
+![binary-heap](https://gitee.com/stardustman/pictrues/raw/master/img/binary-heap.svg) #(二叉堆的自我调整)
 
 #### 代码实现
 

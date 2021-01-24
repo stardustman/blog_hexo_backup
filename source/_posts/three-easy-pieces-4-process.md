@@ -9,7 +9,8 @@ tags: ["os","three easy pieces"]
 > `mechanisms` 和 `policies` 分离, 和 java 中接口和实现非常相似. 实际上这也是软件设计的原则. `OS` 本身也是软件.
 
 ## physical organization of a modern system
-{% asset_img physical-organization-of-a-modern-system.png 现代计算机系统物理架构 %}
+
+![现代计算机系统物理架构](https://gitee.com/stardustman/pictrues/raw/master/img/physical-organization-of-a-modern-system.png)
 
 ## the abstracttion: a process
 
@@ -43,8 +44,7 @@ kill a process or halt it
 
 ## process creation: a little detail
 
-{% asset_img loading-from-program-to-process.png  %}
-
+![loading-from-program-to-process.png](https://gitee.com/stardustman/pictrues/raw/master/img/loading-from-program-to-process.png)
 把程序从磁盘加载到内存. 问题来了:
 1. 是要全部加载到内存吗? (eagerly)
 2. 还是部分加载到内存? (lazy, paging)
@@ -55,7 +55,7 @@ kill a process or halt it
 7. set up related I/O 
 8. execute program, 跳到 entry point, 也就是 main().
 
-{% asset_img load-process.svg 程序加载执行流程 %}
+![程序加载执行流程](https://gitee.com/stardustman/pictrues/raw/master/img/load-process.svg)
 ## process states
 
 简单来说, 分为 3 种状态:
@@ -71,8 +71,7 @@ kill a process or halt it
 
 **a process has performmed some kind of operation that makes it not ready to run until some other event takes place. A common example: when a process initiates an I/O request to a disk, it becomes blocked and thus some other process can use the processor**
 
-{% asset_img process-state-transition.png 进程状态转换 %}
-
+![process-state-transition](https://gitee.com/stardustman/pictrues/raw/master/img/process-state-transition.png)
 ## data structures
 > 以下是 xv6 这个 `MIT` 教学 `OS` 的 [proc.h](https://github.com/stardustman/xv6-public/blob/master/proc.h) 
 ```c

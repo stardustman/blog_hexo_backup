@@ -27,7 +27,7 @@ tags: ["notions"]
 
 如果让你组织数量如此庞大的域名，你该怎样组织呢？没错，也是组织成层级结构，来管理数量如此庞大的域名。一开始的解决方法是直接把域名信息放在 /etc/hosts 文件，随着域名增多，单独的一个文件没法满足要求，数量太多了嘛，放在一个文件，且不论能不能全部存储，查找都是一个大问题。
 
-{% asset_img dns-root-server.png domain-name-hierarchy %}
+![domain-name-hierarchy](https://gitee.com/stardustman/pictrues/raw/master/img/dns-root-server.png)
 
 #####  IP 分配管理方式
 
@@ -37,29 +37,27 @@ IP 地址是一个 32bit 的无符号整数。范围是 [0,2^32-1], 一共有 42
 
 数量庞大的 IP 地址怎样分配管理呢？组成层级结构。通过一级一级`委托`，管理数量庞大的 IP 地址。
 
-{% asset_img IP_AS_Number.svg IP 地址分配管理 %}
-
+![地址分配管理](https://gitee.com/stardustman/pictrues/raw/master/img/IP_AS_Number.svg)
 
 ##### 文件组织方式
 
-{% asset_img file_system_hierarchy.png file system hierarchy %}
+![file system hierarchy](https://gitee.com/stardustman/pictrues/raw/master/img/file_system_hierarchy.png)
 
 #### 不同性质的事物，怎样组织呢？
 
 #####  memory hierarchy
 
-   {% asset_img ComputerMemoryHierarchy.svg ComputerMemoryHierarchy %}
+
+![ComputerMemoryHierarchy](https://gitee.com/stardustman/pictrues/raw/master/img/ComputerMemoryHierarchy.svg)   
 
 ##### Typical memory hierarchy
 
-   {% asset_img typical-memory-hierarchy.png typical-memory-hierarchy %}
-
+![ typical-memory-hierarchy ](https://gitee.com/stardustman/pictrues/raw/master/img/typical-memory-hierarchy.png)
 #####  OSI 参考模型
 
   网络每一层，功能不同。
 
-  {%  asset_img network-layer.svg OSI VS TCP/IP %}
-
+![OSI VS TCP/IP](https://gitee.com/stardustman/pictrues/raw/master/img/network-layer.svg)
 
 
 ###  group(分组)

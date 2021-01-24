@@ -7,7 +7,8 @@ tags: ["docker"]
 > 运行的 Docker 容器是: mssql-node-docker-demo-app 
 
 ## docker info
-{% asset_img docker-info.png docker info 得到的信息 %}
+
+![docker-info](https://gitee.com/stardustman/pictrues/raw/master/img/docker-info.png) #(docker-info)
 
 ## docker inspect
 
@@ -272,10 +273,11 @@ tags: ["docker"]
 }
 ```
 
-{% asset_img local-var-lib-docker-container.png 本地存储的容器的网络配置 %}
+![local-var-lib-docker-container](https://gitee.com/stardustman/pictrues/raw/master/img/local-var-lib-docker-container.png) #(本地存储的容器的网络配置)
 
 ## Container 网络配置
-{% asset_img container-etc.png 容器的网络配置 %}
+
+![container-etc](https://gitee.com/stardustman/pictrues/raw/master/img/container-etc.png) #(容器的网络配置)
 
 ## Docker Images 分层
 ```json
@@ -295,8 +297,7 @@ tags: ["docker"]
 ### MergedDir
 > 这个 MergedDir 层就是一个 Linux 镜像 
 
-{% asset_img merged-dir.png 镜像 Merged 层  %}
-
+![merged-dir](https://gitee.com/stardustman/pictrues/raw/master/img/merged-dir.png) #( 镜像 Merged 层)
 
 
 

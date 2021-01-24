@@ -25,7 +25,7 @@ C 语言里的概念在 X86-64 汇编层面的分析. 汇编风格使用 AT&T �
 
 ## movq operand combinations
 
-{% asset_img address-modes.png  movq operand combinations %}
+![movq operand combinations](https://gitee.com/stardustman/pictrues/raw/master/img/address-modes.png)
 
 ## 代码分析
 
@@ -88,11 +88,10 @@ main:
         ret
 ```
 
-{% asset_img swap-c-asm.png swap-c-asm %}
-
+![swap-c-asm](https://gitee.com/stardustman/pictrues/raw/master/img/swap-c-asm.png)
 ### 栈帧分析
 
-{% asset_img swap-pointer.png main-swap-call-stack %}
+![main-swap-call-stack](https://gitee.com/stardustman/pictrues/raw/master/img/swap-pointer.png)
 
 > 该图是 swap 执行完 int temp = *pa 后的状态.
 
@@ -113,11 +112,10 @@ main:
 
 ### x86-64 registers
 
-{% asset_img x86-64-registers.png %}
-
+![x86-64-registers](https://gitee.com/stardustman/pictrues/raw/master/img/x86-64-registers.png)
 ### IA32 registers
 
-{% asset_img IA32-registers.png %}
+![IA32-registers](https://gitee.com/stardustman/pictrues/raw/master/img/IA32-registers.png)
 
 ### 代码分析
 
@@ -492,10 +490,11 @@ test_variable_shadow():
         popq    %rbp
         ret
 ```
-{% asset_img c-variable-shadow.png  %}
+![c-variable-shadow](https://gitee.com/stardustman/pictrues/raw/master/img/c-variable-shadow.png)
 
 ## 汇编代码分析
-{% asset_img variable_shadowing.png 块级变量隐藏  %}
+
+![块级变量隐藏](https://gitee.com/stardustman/pictrues/raw/master/img/variable_shadowing.png)
 
 # funcation pointer
 > A function pointer can be declared as: (return type of function) (*name of pointer) (type of function arguments)
@@ -547,7 +546,7 @@ main:
         ret
 ```
 
-{% asset_img function-pointer.png 函数指针 %}
+![函数指针](https://gitee.com/stardustman/pictrues/raw/master/img/function-pointer.png)
 
 
 # enum
@@ -582,7 +581,8 @@ main:
         popq    %rbp
         ret
 ```
-{% asset_img c-enum.png c 枚举 %}
+
+![ 枚举](https://gitee.com/stardustman/pictrues/raw/master/img/c-enum.png)
 
 # references
 
