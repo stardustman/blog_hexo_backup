@@ -94,3 +94,6 @@ testArgs(long, long, long, long, long, long, long, long):
 > 分析:
 > testArgs 中 movq    16(%rbp), %rax  // 将 rbp + 16 地址处的数值(a7)复制到 rax
 rbp + 16 的原因是: 参数 a7 是 main 准备的, 属于 main 的栈帧. 16 Bytes 包括 8 Bytes 的 Return address 和 8 Bytes 的 main 的 rbp.
+
+## Reference
+1. [callee-caller](http://web.stanford.edu/class/cs107/guide/x86-64.html)

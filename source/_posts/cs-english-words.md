@@ -33,6 +33,9 @@ tags: ["words"]
 ## h
 
 ## i
+1. independent
+   not connected with another or with each other; separate
+   互不关联，分离的
 
 ## j
 
@@ -71,6 +74,9 @@ tags: ["words"]
 
 1. sparse 稀疏的
    thinly dispersed or scattered
+2. slot
+   1. a long, narrow aperture or slit in a machine for something to be inserted
+   2. an allotted place in a arrangement or plan such as a broadcasting schedule.(安排或计划中分配的位置)
 ## t
 
 1. ternary

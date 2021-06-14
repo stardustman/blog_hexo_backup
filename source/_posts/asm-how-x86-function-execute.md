@@ -68,7 +68,7 @@ q | quad | 64bit
 > 通过寄存器指向了内存地址, 是不是很熟悉的指针啊, 对, 就是指针. C 语言的指针就是这么玩的啊!
 
 ### memory to register
-> movl -4(%ebp)
+> movl -4(%ebp), %eax
 > %eax 表示为: R[eax] = mem[R[ebp] -4]; 
 > 将寄存器 esp 的值减去 4 的值指向的内存地址处存放的值, 复制到寄存器 eax
 
@@ -218,3 +218,5 @@ movq    %rsp, %rbp ; 新函数的栈基址. 一个新的栈帧 sp 和 bp 指向�
 8. [stack-winding(push)-unwinding(pop)](https://www.bogotobogo.com/cplusplus/stackunwinding.php)
 9. [understand-heap-assembly](https://www.bogotobogo.com/cplusplus/assembly.php)
 10. [eax-x86-register-meaning-and-history](https://keleshev.com/eax-x86-register-meaning-and-history/)
+11. [flint.cs.yale.edu/cs421/papers/x86-asm/asm.html](https://flint.cs.yale.edu/cs421/papers/x86-asm/asm.html)
+12. [at&t 语法](https://csiflabs.cs.ucdavis.edu/~ssdavis/50/att-syntax.htm)
