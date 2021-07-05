@@ -2,56 +2,54 @@ name: Deploy Blog
 
 on:
   push:
-    branches: 
+    branches:
       - master
 env:
   TZ: Asia/Shanghai
 
 jobs:
-  build: # 一项叫做build的任务
-
+  build: # 一项叫做 build 的任务
     runs-on: ubuntu-latest # 在最新版的Ubuntu系统下运行
     name: a job to deploy blog
-    
+
     steps:
-    - name: Checkout # 1. 将仓库内master分支的内容下载到工作目录
-      uses: actions/checkout@v2 # 脚本来自 https://github.com/actions/checkout
-      with: 
-        submodules: true
-      
-     # Caching dependencies to speed up workflows. (GitHub will remove any cache entries that have not been accessed in over 7 days.)
-    - name: Cache node modules
-      uses: actions/cache@v1
-      id: cache
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-      
-    - name: Install Dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: npm ci
-    
-    # Deploy hexo blog website.
-    - name: Deploy
-      id: deploy
-      uses: sma11black/hexo-action@v1.0.3
-      with:
-        deploy_key: ${{ secrets.ACTION_DEPLOY_KEY }}
-        user_name: stardustman  # (or delete this input setting to use bot account)
-        user_email: aoyunyoung@gmail.com  # (or delete this input setting to use bot account)
-        commit_msg: ${{ github.event.head_commit.message }}  # (or delete this input setting to use hexo default settings)
-    # Use the output from the `deploy` step(use for test action)
-    - name: Get the output
-      run: |
-        echo "${{ steps.deploy.outputs.notify }}"
-      
-    
-     #- name: Setup Hexo env #3. 设置 Hexo 环境变量 
-      #env:
-      #  ACTION_DEPLOY_KEY: ${{ secrets.ACTION_DEPLOY_KEY }}
-      #run: |
+      - name: Checkout # 1. 将仓库内 master 分支的内容下载到工作目录
+        uses: actions/checkout@v2 # 脚本来自 https://github.com/actions/checkout
+        with:
+          submodules: true
+
+        # Caching dependencies to speed up workflows. (GitHub will remove any cache entries that have not been accessed in over 7 days.)
+      - name: Cache node modules
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      # Deploy hexo blog website.
+      - name: Deploy
+        id: deploy
+        uses: sma11black/hexo-action@v1.0.3
+        with:
+          deploy_key: ${{ secrets.ACTION_DEPLOY_KEY }}
+          user_name: stardustman # (or delete this input setting to use bot account)
+          user_email: aoyunyoung@gmail.com # (or delete this input setting to use bot account)
+          commit_msg: ${{ github.event.head_commit.message }} # (or delete this input setting to use hexo default settings)
+      # Use the output from the `deploy` step(use for test action)
+      - name: Get the output
+        run: |
+          echo "${{ steps.deploy.outputs.notify }}"
+
+        #- name: Setup Hexo env #3. 设置 Hexo 环境变量
+        #env:
+        #  ACTION_DEPLOY_KEY: ${{ secrets.ACTION_DEPLOY_KEY }}
+        #run: |
         # set up private key for deploy
         # mkdir -p ~/.ssh/
         # echo "$ACTION_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
@@ -63,4 +61,3 @@ jobs:
         # install dependencies
         # npm install -g hexo-cli
         # npm ci
- 
