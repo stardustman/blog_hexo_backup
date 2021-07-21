@@ -19,6 +19,7 @@ int main(){
 ```
 
 ### Asm main 
+gcc -o main main.c
 
 ```
 main:
