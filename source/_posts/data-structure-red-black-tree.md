@@ -6,7 +6,7 @@ tags: ["data structure","red-black-tree"]
 
 
 
-
+![2-3tree rbtree](https://gitee.com/stardustman/pictrues/raw/master/img/datastructure/2-3-tree-read-black-tree-2-3-tree.svg)
 
 
 

@@ -117,7 +117,7 @@ local/automatic 底层经常使用 stack 结构来实现。
 
 ##### disadvantage of locals
 
-1. short lifetime. 生命周期非常严格，同栈帧生命周期一样。(heap memory 解决)
+1. short lifetime. 和栈帧同生共死。(heap memory 解决)
 2. restricted communication。caller's parameter -> callee 单向通信。(reference parameter 解决) 
 
 ### heap/dynamic memory
