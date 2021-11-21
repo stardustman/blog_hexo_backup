@@ -145,6 +145,7 @@ separate components
 其实就是指针。这个二级结构。
 pointer(上级)，把上级传出去，就可以指挥下级了。
 pointee(下级)
+一级指针也可以理解为 `hop`，非常像 router 中的下一跳。
 
 ## ownership
 
