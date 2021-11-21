@@ -9,7 +9,7 @@ description:
 keywords:
 author: stardustman
 language: en
-timezone:
+timezone: Asia/Shanghai
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
@@ -155,7 +155,8 @@ duoshuo:
 
 # Extensions
 ## Plugins: http://hexo.io/plugins/
-plugins: hexo-generate-feed  # RSS feed
+plugins: 
+  - hexo-generate-feed  # RSS feed
 
 feed:
   enable: true
