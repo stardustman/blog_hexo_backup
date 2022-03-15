@@ -35,6 +35,7 @@ jobs:
       
       - name: download next theme
         run: |
+          rm -rf .gitmodules
           rm -rf /themes/next
           git submodule add https://github.com/theme-next/hexo-theme-next themes/next
           git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
