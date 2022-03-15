@@ -1,4 +1,4 @@
-name: Deploy Blog
+name: Deploy Blog CI
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
 jobs:
   build: # 一项叫做 build 的任务
     runs-on: ubuntu-latest # 在最新版的Ubuntu系统下运行
-    name: a job to deploy blog
+    name: deploy blog
 
     steps:
       - name: Checkout # 1. 将仓库内 master 分支的内容下载到工作目录
@@ -35,6 +35,7 @@ jobs:
       
       - name: download next theme
         run: |
+          rm -rf /themes/next
           git submodule add https://github.com/theme-next/hexo-theme-next themes/next
           git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
 
