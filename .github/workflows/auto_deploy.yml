@@ -15,8 +15,8 @@ jobs:
     steps:
       - name: Checkout # 1. 将仓库内 master 分支的内容下载到工作目录
         uses: actions/checkout@v2 # 脚本来自 https://github.com/actions/checkout
-#         with:
-#           submodules: true
+        with:
+          submodules: true
 
         # Caching dependencies to speed up workflows. (GitHub will remove any cache entries that have not been accessed in over 7 days.)
       - name: Cache node modules
@@ -33,12 +33,12 @@ jobs:
         run: |
           npm ci
       
-      - name: download next theme
-        run: |
-          rm -rf .gitmodules
-          rm -rf /themes/next
-          git submodule add https://github.com/theme-next/hexo-theme-next themes/next
-          git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
+#       - name: download next theme
+#         run: |
+#           rm -rf .gitmodules
+#           rm -rf /themes/next
+#           git submodule add https://github.com/theme-next/hexo-theme-next themes/next
+#           git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
 
       # Deploy hexo blog website.
       - name: Deploy
